@@ -97,4 +97,14 @@ No current improvements.
 6. [/]  The implementation of classes, object instantiation, encapsulation
 	and methods are complete and with no issues.
 
+Question Guide:
+Have the requirements been met?
+	The requirements for the pass criteria have been met strongly, with a large amount of high mark requirements met.
+Is the code formatted using the Style Guidelines correctly?
+	The code is formatted very professionally and simply, allowing easy delegation of what code belongs to what class and reigon within the solution. Good structure and variables have been used.
+Is the code easy to read?
+	The code is easy to read and commented well to ensure further understanding of the logic behind the programming.
+Are different errors handled correctly?
+	Errors are mostly handled correctly, there were no issues when running the code and testing its functionality. However, there may be areas where more error handling could be implemented. 
+
 
