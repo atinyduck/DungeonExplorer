@@ -1,0 +1,100 @@
+ # Feedback
+
+	Morgan Osborn
+
+## Game.cs 
+
+Good Aspects:
+Encapsulation and Structure:
+  The class properly encapsulates game fucntionality to ensure securoty with a smooth game flow and structured approach.
+  Seperates the concerns by having different regions and sections for different aspects of the game.
+  Easy to read and interpret the functions of each section of the class, allowing for easy understanding.
+OOP Approach:
+  Uses classes elsewhere in the solution making it easy to extend the complexity of the game.
+  Keeps record of rooms that ahve been visited to avoid any repition in the users case when playing.
+
+Improvements:
+
+The GameLoop() method enters an infinite loop, but there is no condition to break the loop. Integrating a fail safe like an exit command in order to exit the continuous loop.
+
+## GameUI.cs
+
+Good Aspects:
+Well-Stuctured Code:
+  Uses reigons to split up code into their designated sections and organise their functionality
+  Keeps UI logic seperate from game logic to reduce the impactability of errors
+Excellent use of Constants:
+  Stores static messahes in constants, improving flexibility and maintainability
+
+Improvements:
+
+Flexibility of GetInput() is limited, only allowing certain inputs to be taken into consideration.
+
+## Player.cs
+
+Good Aspects:
+  Well structured class and easy to extend in the future of the solution as it gets more complex.
+  Encapsulated properties prevent unintended modifications around the class.
+  Provides clear display of the players attributes and inventory
+
+Improvements:
+  Ammend PickUpItem() to ensure that duplicate items are not tolerated.
+  Ensure that the bounds on the players health do not exceed 0 - 100.
+
+## Room.cs
+
+Good Aspects:
+  Awesome use of a LootRoom() function to provide some interactive way for players to loot rooms.
+  DisplayRoom() is well integrated into this class
+  Good constructor logic for random loot.
+
+Improvements:
+
+No current improvements.
+
+# Checklist:
+
+## Pass standard:
+	
+1. [/] The code compiles and runs.
+2. [/] The player can explore at least one room.
+3. [/] Object instantiation, method calls evident.
+4. [/] There is code review from two students.
+5. [/] Handle invalid commands gracefully without crashing the program.
+
+## 2:2 standard:
+
+1. [?]  Rooms can contain multiple items or monsters.
+2. [?]  The Testing class is used.
+3. [/]  The player can pick up items through an implementation of the
+        Player.PickUpItem() method.
+4. [/]  The C# style guide is followed partially.
+5. [?]  At least one room has a description and can contain one item or one
+	monster. These functionalities are given by the Room.GetDescription() method.
+6. [/]  Method calls from ‘Main’ to methods in other classes
+
+## 2:1 standard:
+
+1. [?]  Pull Requests and code reviews are noted
+2. [/]  You have taken account of the reviews and merging your changes.
+3. [/]  There is a complete implementation of your code with no issues.
+4. [/]  Commenting is mostly through the code files.
+5. [/]  There are at least one Game and Player objects.
+6. [?]  There is evidence of testing.
+7. [/]  Error handling is performed well but there are still issues.
+8. [/]  There is clear evidence of object-oriented features such as classes, object 	instantiation, encapsulation and methods.
+
+## First standard:
+
+1. [?]  You have taken effective account of the reviews by merging your
+	changes or suggesting alternative approaches.
+2. [?]  The video demonstrates a critical reflection and that you learned from
+	the assignment’s experience.
+3. [.]  The implementation is complete with excellent error handling.
+4. [/]  The C# style guide is shown to be adhered to. XML documenting
+	comments are throughout the code.
+5. [.]  The testing class uses ‘debug.assert’ to verify aspects of the code.
+6. [/]  The implementation of classes, object instantiation, encapsulation
+	and methods are complete and with no issues.
+
+
