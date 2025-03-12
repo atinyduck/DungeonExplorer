@@ -59,7 +59,7 @@ Supporting report: [LINK]
 
 ---
 
-##Contributing
+## Contributing
 
 Contributions are welcome! If you'd like to contribute to Rust & Ruin, please follow these steps:
 2. Fork the repository.
