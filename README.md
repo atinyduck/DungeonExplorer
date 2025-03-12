@@ -69,7 +69,4 @@ Contributions are welcome! If you'd like to contribute to Rust & Ruin, please fo
 
 ---
 
-
----
-
 Made by **Jake Morgan**
