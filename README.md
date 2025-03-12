@@ -80,11 +80,11 @@ To install and run **Rust & Ruin**, follow these steps:
 ### Steps
 1. **Clone the Repository**:
 ```bash
-git clone https://github.com/your-username/rust-and-ruin.git
+git clone https://github.com/atinyduck/DungeonExplorer
 ```
 2. Navigate to the Project Directory:
 ```bash
-cd rust-and-ruin
+cd DungeonExplorer
 ```
 3. Build the Project:
 ```bash
