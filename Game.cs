@@ -53,7 +53,7 @@ namespace DungeonExplorer
             {
                 visited_rooms.Add(current_room);
 
-                current_room.DisplayRoom(player);
+                GameUI.DisplayRoom(current_room, player);
             }
         }
 

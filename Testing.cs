@@ -225,7 +225,7 @@ namespace DungeonExplorer
             Room test_room = new Room();
 
             int initial_neighbour_count = test_room.GetNeighbours().Count;
-            test_room.GenerateNeighbour();
+            test_room.GenerateNeighbour(0);
 
             // Test if new neighbour has been generated
             Debug.Assert(test_room.GetNeighbours().Count == initial_neighbour_count + 1,

@@ -15,22 +15,28 @@ namespace DungeonExplorer
         /// The Room object holds all functionality for each room in this game.
         /// </summary>
         
+        // Constants
         private const int LootChance = 4;
+        private const int DeadEndChance = 12;
         internal const int MaxNeighbours = 3;
+        private const int MaxRecursionDepth = 5;
         private const string DescriptionSrc = "room_descriptions.txt";
 
-
+        // Descriptions
         private static readonly List<string> Descriptions = LoadDescriptions();
         private readonly string Description;
+
         private readonly List<string> Loot;
-        private readonly List<Room> Neighbours;
+
+        // Neighbours and their direction
+        private readonly Dictionary<Room, string> Neighbours = new Dictionary<Room, string>();
 
         private static readonly Random rnd = new Random();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Room"/> class.
         /// </summary>
-        internal Room()
+        internal Room(int depth = 0)
         {
             if (Descriptions.Count != 0)
             {
@@ -48,21 +54,61 @@ namespace DungeonExplorer
                 this.Loot = new List<string>();
             }
 
-            this.Neighbours = new List<Room>();
-
-            // Generate a random amount of neighbours
-            for (int neighbourCount = rnd.Next(MaxNeighbours); neighbourCount > 0 ; neighbourCount--)
+            if (rnd.Next(DeadEndChance) != 1)
             {
-                this.GenerateNeighbour();
+                // Generate a random amount of neighbours
+                for (int neighbourCount = rnd.Next(1, MaxNeighbours + 1); neighbourCount > 0; neighbourCount--)
+                {
+                    this.GenerateNeighbour(depth + 1);
+                }
+            }
+            
+        }
+
+        /// <summary>
+        /// Returns the description and contents of the room
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            StringBuilder room_string = new StringBuilder();
+
+            // Display the description
+            room_string.AppendLine($"What you see...\n\n    {GetDescription()}");
+
+            // Display the loot 
+            if (GetLoot().Any())
+            {
+                room_string.AppendLine("\nYou can see things worth picking up!");
+                foreach (var item in GetLoot())
+                {
+                    room_string.AppendLine($" :: {item}");
+                }
+            }
+            else
+            {
+                room_string.AppendLine("\nThere is nothing of worth in this room.");
             }
 
+            // Display the neighbours
+            if (GetNeighbours().Any())
+            {
+                room_string.AppendLine($"\nYou can see {GetNeighbours().Count} door(s) leading from this room.");
+            }
+            else
+            {
+                room_string.AppendLine("\nThere are no doors leading out, go back.");
+            }
+
+            // Return the display 
+            return room_string.ToString();
         }
 
         /// <summary>
         /// Gets the list of neighbours
         /// </summary>
         /// <returns> List: The neighbours </returns>
-        internal List<Room> GetNeighbours() => this.Neighbours;
+        internal Dictionary<Room, string> GetNeighbours() => this.Neighbours;
 
         /// <summary>
         /// Gets the loot.
@@ -101,22 +147,40 @@ namespace DungeonExplorer
         /// <returns> List: The descriptions. </returns>
         private static List<string> LoadDescriptions()
         {
+            List<string> catch_list = new List<string> {
+                        "A dark and eerie room.",
+                        "A room filled with ancient artifacts.",
+                        "A room with a mysterious aura."
+                        };
+
             try
             {
                 if (!File.Exists(DescriptionSrc))
                 {
-                    return new List<string> { "File does not exist." };
+                    return catch_list;
                 }
 
                 // Read file contents and choose random description
                 using (var reader = new StreamReader(DescriptionSrc))
                 {
-                    return reader.ReadToEnd().Split('\n').ToList();
+                    var descriptions = reader.ReadToEnd().Split('\n').ToList();
+
+                    // Ensure there's atleast one description
+                    if (descriptions.Any())
+                    {
+                        return descriptions;
+                    }
+                    else
+                    {
+                        return catch_list;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                return new List<string> { $"Failed to read file: {ex}" };
+                // Log error for feeback
+                GameUI.DisplayMessage($"Failed to read descriptions: {ex}");
+                return catch_list;
             }
         }
 
@@ -126,6 +190,10 @@ namespace DungeonExplorer
         /// <returns> String: The new description</returns>
         private string GenerateDescription()
         {
+            if (Descriptions.Count == 0)
+            {
+                return "A mysterious room with no description, you may have gone blind?";
+            }
             return Descriptions[rnd.Next(Descriptions.Count)];
         }
 
@@ -146,23 +214,33 @@ namespace DungeonExplorer
         /// <summary>
         /// Generates the neighbour.
         /// </summary>
-        internal void GenerateNeighbour()
+        internal void GenerateNeighbour(int depth = 0)
         {
             try
             {
                 // If the max amount of neighbours is present do not make more
-                if (this.Neighbours.Count >= MaxNeighbours)
+                if (GetNeighbours().Count >= MaxNeighbours)
+                {
+                    return;
+                }
+
+                // Check if max recursion depth has been reached
+                if (depth > MaxRecursionDepth)
                 {
                     return;
                 }
 
                 // Make a new room
-                Room new_neighbour = new Room();
-                while (this.Neighbours.Contains(new_neighbour))
+                Room new_neighbour = new Room(depth);
+                string direction = GetRandomDirection();
+
+                // Ensure direction is unique
+                while (GetNeighbours().ContainsValue(direction))
                 {
-                    new_neighbour = new Room();
+                    direction = GetRandomDirection();
                 }
-                this.Neighbours.Add(new_neighbour);
+
+                this.Neighbours.Add(new_neighbour, direction);
             }
             catch (Exception ex)
             {
@@ -170,6 +248,32 @@ namespace DungeonExplorer
                 GameUI.DisplayMessage(message, wait: false);
                 throw; // Re-throw for debugging
             }
+        }
+
+        /// <summary>
+        /// Gets a random direction (N, E, W)
+        /// South represents the previous room
+        /// </summary>
+        /// <returns>string: The direction</returns>
+        private string GetRandomDirection()
+        {
+            string[] directions = { "North", "East", "West" };
+            return directions[rnd.Next(directions.Length)];
+        }
+
+        internal Room MoveToNeighbour(string direction)
+        {
+            foreach (var neighbour in this.Neighbours)
+            {
+                // Find a new room equal to the players entered direction
+                if (neighbour.Value.Equals(direction, StringComparison.OrdinalIgnoreCase))
+                {
+                    return neighbour.Key;
+                }
+            }
+
+            GameUI.DisplayMessage("You cannot go that way.");
+            return this; // Stay in the current room
         }
 
         /// <summary>
@@ -195,12 +299,13 @@ namespace DungeonExplorer
 
             loot_prompt.Append(loot_txt);
 
+            // Get the loot input
             List<string> loot_inputs = Enumerable.Range(1, loot_count + 1)
                 .Select(x => x.ToString())
                 .ToList();
-
             string input = GameUI.GetInput(loot_inputs, loot_prompt.ToString());
 
+            // The index of the loot
             return int.Parse(input) - 1;
         }
 
@@ -208,7 +313,7 @@ namespace DungeonExplorer
         /// Loots the room.
         /// </summary>
         /// <param name="current_player">The current player.</param>
-        private void LootRoom(Player current_player)
+        internal void LootRoom(Player current_player)
         {
             List<string> current_loot = this.GetLoot();
             int loot_count = this.GetLoot().Count;
@@ -241,56 +346,20 @@ namespace DungeonExplorer
         }
 
         /// <summary>
-        /// Displays the room.
+        /// Move onto the next room.
         /// </summary>
-        /// <param name="current_player">The current player.</param>
-        /// 
-        internal void DisplayRoom(Player current_player)
+        internal void AdventureOn(Player current_player)
         {
-            // Outputs strings
-            string room_menu = $@"{GameUI.TITLE}{this.GetDescription()}
-
-What will you do next?
-
-1. Loot the room
-2. Adventure on
-3. Check Self
-4. Quit Game
-Choose an option [1 - 3]
-";
-
-            // Get the player's choice
-            List<string> room_options = new List<string>() { "1", "2", "3", "4" };
-            string choice = GameUI.GetInput(room_options, room_menu);
-
-            // Compare their choice
-            switch (choice)
+            StringBuilder directions_menu = new StringBuilder("Choose a direction:\n");
+            foreach(var neighbour in GetNeighbours())
             {
-                case "1": // Loot the room
-                    this.LootRoom(current_player);
-                    break;
-
-                case "2": // Enter another room
-                    break;
-
-                case "3": // Check the player's stats
-                    GameUI.DisplayMessage(current_player.ToString());
-                    break;
-
-                case "4": // Quit game
-
-                    // If the user wants to quit return to main menu
-                    if (GameUI.ConfirmQuit())
-                    {
-                        GameUI.DisplayMenu();
-                    }
-                    else
-                    {
-                        DisplayRoom(current_player);
-                    }
-                    break;
+                directions_menu.Append($"\n :: {neighbour.Value}");
             }
-        }
 
+            string direction = GameUI.GetInput(GetNeighbours().Values.ToList(), directions_menu.ToString());
+
+            Room next_room = this.MoveToNeighbour(direction);
+            GameUI.DisplayRoom(next_room, current_player);
+        }
     }
 }
