@@ -10,7 +10,6 @@
 3. [How to Play](#how-to-play)  
 4. [Assessment Details](#assessment-details)  
 5. [Contributing](#contributing)
-6. [Installation](#installation)
 
 ---
 
@@ -70,36 +69,6 @@ Contributions are welcome! If you'd like to contribute to Rust & Ruin, please fo
 
 ---
 
-## Installation
-
-To install and run **Rust & Ruin**, follow these steps:
-
-### Prerequisites
-- [.NET Framework 4.7.2](https://dotnet.microsoft.com/download/dotnet-framework/net472) (or later) must be installed on your system.
-- [MSBuild](https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild) (included with Visual Studio or the .NET Framework SDK).
-
-### Steps
-1. **Clone the Repository**:
-```bash
-git clone https://github.com/atinyduck/DungeonExplorer
-```
-2. Navigate to the Project Directory:
-```bash
-cd DungeonExplorer
-```
-3. Build the Project:
-```bash
-msbuild DungeonExplorer.sln
-```
-4. Run the Game:
-  - Navigate to the output directory (e.g., bin\Debug):
-  ```bash
-  cd bin\Debug
-  ```
-  - Run the executable:
-  ```bash
-  DungeonExplorer.exe
-  ```
 
 ---
 
