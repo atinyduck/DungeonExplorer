@@ -13,7 +13,7 @@ namespace DungeonExplorer
     {
         #region String Constants
 
-        public const string TITLE = @"
+        internal const string TITLE = @"
 =================================================
                   RUST & RUIN                  
 =================================================
@@ -70,7 +70,7 @@ Choose your fate [1 - 4]";
         /// Displays the message.
         /// </summary>
         /// <param name="message">The message.</param>
-        public static void DisplayMessage(string message, bool clear = false, bool wait = true)
+        internal static void DisplayMessage(string message, bool clear = false, bool wait = true)
         {
             if (clear) Console.Clear();
 
@@ -83,7 +83,7 @@ Choose your fate [1 - 4]";
         /// Displays the intro.
         /// </summary>
         /// <param name="player">The player.</param>
-        public static void DisplayIntro(Player player)
+        internal static void DisplayIntro(Player player)
         {
             // Get a new name input from the user
             player.Name = GetInput(new List<string>(), (TITLE + INTRO), false);
@@ -96,12 +96,12 @@ Choose your fate [1 - 4]";
         /// <summary>
         /// Displays the menu.
         /// </summary>
-        public static void DisplayMenu()
+        internal static void DisplayMenu()
         {
             bool playing = true;
             while (playing)
             {
-                List<string> menu_options = new List<string>() { "1", "2", "3", "4" };
+                List<string> menu_options = new List<string>() { "1", "2", "3", "4", "D"};
                 string menu_input = GetInput(menu_options, TITLE + MENU);
 
                 switch (menu_input)
@@ -128,6 +128,11 @@ Choose your fate [1 - 4]";
                         }
                         break;
 
+                    case "D":
+                        // Debugging 
+                        Testing.TestMenu();
+                        break;
+
                     default:
                         // Designed to catch anomalies
                         DisplayMessage(TITLE + "Error processing menu input, quitting.", true);
@@ -140,7 +145,7 @@ Choose your fate [1 - 4]";
         /// <summary>
         /// Displays how to play the game.
         /// </summary>
-        public static void DisplayHowTo()
+        internal static void DisplayHowTo()
         {
             DisplayMessage(TITLE + "Waiting on implementation", true);
         }
@@ -155,7 +160,7 @@ Choose your fate [1 - 4]";
         /// <param name="valid_inputs">The valid inputs.</param>
         /// <param name="output">The output.</param>
         /// <returns>string: The user's input.</returns>
-        public static string GetInput(List<string> valid_inputs, string output, bool enforce_validation = true)
+        internal static string GetInput(List<string> valid_inputs, string output, bool enforce_validation = true)
         {
             string input = null;
 
@@ -182,7 +187,7 @@ Choose your fate [1 - 4]";
             }
         }
 
-        public static bool ConfirmQuit()
+        internal static bool ConfirmQuit()
         {
             string quit_txt = "Are you sure you want to quit? [ Y/N ]";
 
@@ -192,7 +197,7 @@ Choose your fate [1 - 4]";
             return quit_input.ToUpper() == "Y";
         }
 
-        public static void WaitForInput()
+        internal static void WaitForInput()
         {
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();

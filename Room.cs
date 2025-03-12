@@ -9,28 +9,33 @@ using System.Runtime.Remoting.Lifetime;
 
 namespace DungeonExplorer
 {
-    public class Room
+    internal class Room
     {
         /// <summary>
         /// The Room object holds all functionality for each room in this game.
         /// </summary>
         
         private const int LootChance = 4;
-        private const int MaxNeighbours = 3;
+        internal const int MaxNeighbours = 3;
         private const string DescriptionSrc = "room_descriptions.txt";
 
+
+        private static readonly List<string> Descriptions = LoadDescriptions();
         private readonly string Description;
         private readonly List<string> Loot;
         private readonly List<Room> Neighbours;
 
-        private readonly Random rnd = new Random();
+        private static readonly Random rnd = new Random();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Room"/> class.
         /// </summary>
-        public Room()
+        internal Room()
         {
-            this.Description = GenerateDescription();
+            if (Descriptions.Count != 0)
+            {
+                this.Description = GenerateDescription();
+            }
 
             // If the room has loot generate it
             if (rnd.Next(LootChance) != 0)
@@ -54,21 +59,27 @@ namespace DungeonExplorer
         }
 
         /// <summary>
+        /// Gets the list of neighbours
+        /// </summary>
+        /// <returns> List: The neighbours </returns>
+        internal List<Room> GetNeighbours() => this.Neighbours;
+
+        /// <summary>
         /// Gets the loot.
         /// </summary>
         /// <returns> List: The list of loot. </returns>
-        public List<string> GetLoot() => this.Loot;
+        internal List<string> GetLoot() => this.Loot;
 
         /// <summary>
         /// Gets the description.
         /// </summary>
         /// <returns> string: The description. </returns>
-        public string GetDescription() => this.Description;
+        internal string GetDescription() => this.Description;
 
         /// <summary>
         /// Removes a specified item from loot.
         /// </summary>
-        public void RemoveLoot(string item)
+        internal void RemoveLoot(string item)
         {
             // If loot contains the specified item
             if (this.Loot.Contains(item))
@@ -85,29 +96,37 @@ namespace DungeonExplorer
         }
 
         /// <summary>
-        /// Generates the description.
+        /// Loads the descriptions.
         /// </summary>
-        /// <returns> string: The new description. </returns>
-        private string GenerateDescription()
+        /// <returns> List: The descriptions. </returns>
+        private static List<string> LoadDescriptions()
         {
             try
             {
                 if (!File.Exists(DescriptionSrc))
                 {
-                    return "File does not exist.";
+                    return new List<string> { "File does not exist." };
                 }
 
                 // Read file contents and choose random description
                 using (var reader = new StreamReader(DescriptionSrc))
                 {
-                    var descriptions = reader.ReadToEnd().Split('\n');
-                    return descriptions[rnd.Next(descriptions.Length)];
+                    return reader.ReadToEnd().Split('\n').ToList();
                 }
             }
             catch (Exception ex)
             {
-                return $"Failed to read file: {ex}";
-            } 
+                return new List<string> { $"Failed to read file: {ex}" };
+            }
+        }
+
+        /// <summary>
+        /// Generates a random description
+        /// </summary>
+        /// <returns> String: The new description</returns>
+        private string GenerateDescription()
+        {
+            return Descriptions[rnd.Next(Descriptions.Count)];
         }
 
         /// <summary>
@@ -127,15 +146,30 @@ namespace DungeonExplorer
         /// <summary>
         /// Generates the neighbour.
         /// </summary>
-        private void GenerateNeighbour()
+        internal void GenerateNeighbour()
         {
-            Room new_neighbour = new Room();
-
-            while (this.Neighbours.Contains(new_neighbour))
+            try
             {
-                new_neighbour = new Room();
+                // If the max amount of neighbours is present do not make more
+                if (this.Neighbours.Count >= MaxNeighbours)
+                {
+                    return;
+                }
+
+                // Make a new room
+                Room new_neighbour = new Room();
+                while (this.Neighbours.Contains(new_neighbour))
+                {
+                    new_neighbour = new Room();
+                }
+                this.Neighbours.Add(new_neighbour);
             }
-            this.Neighbours.Add(new_neighbour);
+            catch (Exception ex)
+            {
+                string message = $"Exception in GenerateNeighbour: {ex}";
+                GameUI.DisplayMessage(message, wait: false);
+                throw; // Re-throw for debugging
+            }
         }
 
         /// <summary>
@@ -211,7 +245,7 @@ namespace DungeonExplorer
         /// </summary>
         /// <param name="current_player">The current player.</param>
         /// 
-        public void DisplayRoom(Player current_player)
+        internal void DisplayRoom(Player current_player)
         {
             // Outputs strings
             string room_menu = $@"{GameUI.TITLE}{this.GetDescription()}
