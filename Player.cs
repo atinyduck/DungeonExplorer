@@ -31,7 +31,9 @@ namespace DungeonExplorer
         /// </returns>
         public override string ToString()
         {
-            const string Title = "\r\n=================================================\r\n                  PLAYER STATS                  \r\n=================================================";
+            const string Title = "\r\n=================================================" +
+                "\r\n                  PLAYER STATS                  \r\n" +
+                "=================================================";
 
             string Stats = $"\r\nName: {this.Name} \r\nHP: {this.Health} \r\n\r\nInventory:\r\n{this.GetInventoryContents()}\r\n";
 

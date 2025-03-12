@@ -11,8 +11,11 @@ namespace DungeonExplorer
     {
         const string TITLE = "\n\n===== Debug =====\n";
 
-        #region Testing Menu
+        #region Testing 
 
+        /// <summary>
+        /// User input for testing functionality.
+        /// </summary>
         internal static void TestMenu()
         {
             string output = TITLE + "Menu ::\n\nPlease enter an option :\n1. Player\n2. Room\n3. All";
@@ -222,7 +225,9 @@ namespace DungeonExplorer
         /// </summary>
         private static void TestNeighbourManagement()
         {
-            Room test_room = new Room();
+            // Use a seeded Random for predictable behavior
+            Random seededRandom = new Random(12345); // Fixed seed for predictability
+            Room test_room = new Room(0, seededRandom);
 
             int initial_neighbour_count = test_room.GetNeighbours().Count;
             test_room.GenerateNeighbour(0);
@@ -230,7 +235,6 @@ namespace DungeonExplorer
             // Test if new neighbour has been generated
             Debug.Assert(test_room.GetNeighbours().Count == initial_neighbour_count + 1,
                 "Neighbour count should increase by one.");
-
         }
 
         #endregion
