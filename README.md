@@ -7,10 +7,9 @@
 ## Table of Contents
 1. [Description](#description)  
 2. [Features](#features)  
-3. [Installation](#installation)  
-4. [How to Play](#how-to-play)  
-5. [Assessment Details](#assessment-details)  
-6. [Contributing](#contributing)  
+3. [How to Play](#how-to-play)  
+4. [Assessment Details](#assessment-details)  
+5. [Contributing](#contributing)  
 
 ---
 
@@ -36,30 +35,6 @@ Do you have what it takes to navigate the dangers, claim the treasure, and uncov
 - **Inventory System**: Collect and manage resources, weapons, and artifacts to aid your survival.  
 - **Exploration**: Discover hidden secrets, lore, and treasures scattered throughout the Iron Maw.  
 - **Atmospheric Storytelling**: Immerse yourself in a world of decay and mystery through rich descriptions and narrative.  
-
----
-
-## Installation
-
-To play **Rust & Ruin**, follow these steps:
-
-1. Ensure you have the [.NET SDK](https://dotnet.microsoft.com/download) installed on your system.  
-2. Clone this repository:  
-```bash
-git clone https://github.com/atinyduck/DungeonExplorer
-```
-4. Navigate to the project directory:
-```bash
-cd DungeonExplorer
-```
-6. Build the project:
-```bash
-dotnet build
-```
-8. Run the game:
-```bash
-dotnet run
-```
 
 ---
 
