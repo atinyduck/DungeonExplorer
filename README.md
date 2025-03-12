@@ -53,9 +53,9 @@ Repository designed for CMP1903M_2425 at the University of Lincoln
 
 ### Assessmemt 1
 
-Video outlining OOP methods and how I implemented them: [LINK]
+Video outlining OOP methods and how I implemented them: [Video Link]
 
-Supporting report: [LINK]
+Supporting report: [Report Link](https://universityoflincoln-my.sharepoint.com/:w:/g/personal/29160569_students_lincoln_ac_uk/EYqaNETTvN9AsYEpJkQ3Te4BQi4pOBzE47FRZQqrGRfqpg?e=eEkfYp)
 
 ---
 
