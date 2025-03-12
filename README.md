@@ -46,7 +46,7 @@ To play **Rust & Ruin**, follow these steps:
 1. Ensure you have the [.NET SDK](https://dotnet.microsoft.com/download) installed on your system.  
 2. Clone this repository:  
 ```bash
-git clone https://github.com/your-username/rust-and-ruin.git
+git clone https://github.com/atinyduck/rust-and-ruin.git
 ```
 4. Navigate to the project directory:
 ```bash
