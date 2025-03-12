@@ -46,11 +46,11 @@ To play **Rust & Ruin**, follow these steps:
 1. Ensure you have the [.NET SDK](https://dotnet.microsoft.com/download) installed on your system.  
 2. Clone this repository:  
 ```bash
-git clone https://github.com/atinyduck/rust-and-ruin.git
+git clone https://github.com/atinyduck/DungeonExplorer
 ```
 4. Navigate to the project directory:
 ```bash
-cd rust-and-ruin
+cd DungeonExplorer
 ```
 6. Build the project:
 ```bash
