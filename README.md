@@ -9,7 +9,8 @@
 2. [Features](#features)  
 3. [How to Play](#how-to-play)  
 4. [Assessment Details](#assessment-details)  
-5. [Contributing](#contributing)  
+5. [Contributing](#contributing)
+6. [Installation](#installation)
 
 ---
 
