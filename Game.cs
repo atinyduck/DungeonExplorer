@@ -25,7 +25,7 @@ namespace DungeonExplorer
         }
 
         /// <summary>
-        /// Starts this instance.
+        /// Starts this instance of 'Game'.
         /// </summary>
         internal void Start()
         {
@@ -44,7 +44,9 @@ namespace DungeonExplorer
 
         #region Game Control
 
-
+        /// <summary>
+        /// Runs the main game loop.
+        /// </summary>
         private void GameLoop()
         {
             bool running = true;

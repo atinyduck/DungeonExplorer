@@ -8,15 +8,13 @@ namespace DungeonExplorer
 {
     internal class Program
     {
+        /// <summary>
+        /// Run point of the program
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
-            /// <summary>
-            /// This game is the Assessment for CMP1903M 2425 A01
-            /// 
-            /// This game will be know as Rust & Ruin
-            /// A game set in the decaying ruins of a steampunk Earth
-            /// 
-            /// </summary>
+            // This game is the Assessment for CMP1903M 2425 A01
 
             Game game = new Game();
 

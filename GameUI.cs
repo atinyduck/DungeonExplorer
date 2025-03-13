@@ -177,7 +177,15 @@ Choose an option [1 - 3]";
                         break;
 
                     case "2": // Enter another room
-                        room.AdventureOn(player);
+                        // Ensure there is a room to move to.
+                        if (room.GetNeighbours().Count > 0)
+                        {
+                            room.AdventureOn(player);
+                        }
+                        else
+                        {
+                            DisplayMessage("You cannot push forward, you must go back.");
+                        }
                         break;
 
                     case "3":
@@ -250,6 +258,10 @@ Choose an option [1 - 3]";
             }
         }
 
+        /// <summary>
+        /// Confirm if the user wants to quit.
+        /// </summary>
+        /// <returns>bool: If the input is 'Y'</returns>
         internal static bool ConfirmQuit()
         {
             string quit_txt = "Are you sure you want to quit? [ Y/N ]";
@@ -260,6 +272,9 @@ Choose an option [1 - 3]";
             return quit_input.ToUpper() == "Y";
         }
 
+        /// <summary>
+        /// Waits for input from the user.
+        /// </summary>
         internal static void WaitForInput()
         {
             Console.WriteLine("Press any key to continue...");

@@ -23,7 +23,7 @@ namespace DungeonExplorer
         private const string DescriptionSrc = "room_descriptions.txt";
 
         // Descriptions
-        private static readonly List<string> Descriptions = LoadDescriptions();
+        private readonly List<string> Descriptions = LoadDescriptions();
         private readonly string Description;
 
         private readonly List<string> Loot;
@@ -31,16 +31,23 @@ namespace DungeonExplorer
         // Neighbours and their direction
         private readonly Dictionary<Room, string> Neighbours = new Dictionary<Room, string>();
 
-        private static readonly Random rnd = new Random();
+        private readonly Random rnd;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Room"/> class.
         /// </summary>
-        internal Room(int depth = 0)
+        internal Room(int depth = 0, Random random = null, List<string> available_descriptions = null)
         {
+
+            this.rnd = random ?? new Random();
+            this.Descriptions = available_descriptions ?? LoadDescriptions();
+
+            // Generate new description
             if (Descriptions.Count != 0)
             {
                 this.Description = GenerateDescription();
+                // Remove used description from the list
+                Descriptions.Remove(this.Description);
             }
 
             // If the room has loot generate it
@@ -54,10 +61,10 @@ namespace DungeonExplorer
                 this.Loot = new List<string>();
             }
 
-            if (rnd.Next(DeadEndChance) != 1)
+            if (this.rnd.Next(DeadEndChance) != 1)
             {
                 // Generate a random amount of neighbours
-                for (int neighbourCount = rnd.Next(1, MaxNeighbours + 1); neighbourCount > 0; neighbourCount--)
+                for (int neighbourCount = this.rnd.Next(1, MaxNeighbours + 1); neighbourCount > 0; neighbourCount--)
                 {
                     this.GenerateNeighbour(depth + 1);
                 }
@@ -194,7 +201,7 @@ namespace DungeonExplorer
             {
                 return "A mysterious room with no description, you may have gone blind?";
             }
-            return Descriptions[rnd.Next(Descriptions.Count)];
+            return Descriptions[this.rnd.Next(Descriptions.Count)];
         }
 
         /// <summary>
@@ -216,37 +223,41 @@ namespace DungeonExplorer
         /// </summary>
         internal void GenerateNeighbour(int depth = 0)
         {
-            try
+            if (this.rnd.Next(DeadEndChance) != 1)
             {
-                // If the max amount of neighbours is present do not make more
-                if (GetNeighbours().Count >= MaxNeighbours)
+                try
                 {
-                    return;
-                }
+                    // If the max amount of neighbours is present do not make more
+                    if (GetNeighbours().Count >= MaxNeighbours)
+                    {
+                        return;
+                    }
 
-                // Check if max recursion depth has been reached
-                if (depth > MaxRecursionDepth)
+                    // Check if max recursion depth has been reached
+                    if (depth > MaxRecursionDepth)
+                    {
+                        return;
+                    }
+
+                    // Make a new room
+                    Room new_neighbour = new Room(depth, this.rnd, new List<string>(this.Descriptions));
+
+                    string direction = GetRandomDirection();
+
+                    // Ensure direction is unique
+                    while (GetNeighbours().ContainsValue(direction))
+                    {
+                        direction = GetRandomDirection();
+                    }
+
+                    this.Neighbours.Add(new_neighbour, direction);
+                }
+                catch (Exception ex)
                 {
-                    return;
+                    string message = $"Exception in GenerateNeighbour: {ex}";
+                    GameUI.DisplayMessage(message, wait: false);
+                    throw; // Re-throw for debugging
                 }
-
-                // Make a new room
-                Room new_neighbour = new Room(depth);
-                string direction = GetRandomDirection();
-
-                // Ensure direction is unique
-                while (GetNeighbours().ContainsValue(direction))
-                {
-                    direction = GetRandomDirection();
-                }
-
-                this.Neighbours.Add(new_neighbour, direction);
-            }
-            catch (Exception ex)
-            {
-                string message = $"Exception in GenerateNeighbour: {ex}";
-                GameUI.DisplayMessage(message, wait: false);
-                throw; // Re-throw for debugging
             }
         }
 
