@@ -62,10 +62,10 @@ Supporting report: [Report Link](https://universityoflincoln-my.sharepoint.com/:
 ## Contributing
 
 Contributions are welcome! If you'd like to contribute to Rust & Ruin, please follow these steps:
-2. Fork the repository.
-3. Create a new branch for your feature or bugfix.
-4. Commit your changes.
-5. Submit a pull request with a detailed description of your changes.
+  1. Fork the repository.
+  2. Create a new branch for your feature or bugfix.
+  3. Commit your changes.
+  4. Submit a pull request with a detailed description of your changes.
 
 ---
 
