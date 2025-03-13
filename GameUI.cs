@@ -264,7 +264,7 @@ Choose an option [1 - 3]";
         /// <returns>bool: If the input is 'Y'</returns>
         internal static bool ConfirmQuit()
         {
-            string quit_txt = "Are you sure you want to quit? [ Y/N ]";
+            string quit_txt = "Are you sure you want to quit? [ Y/N ]\nUnsaved progress will be deleted.";
 
             List<string> valid_inputs = new List<string>() { "Y", "N" };
             string quit_input = GetInput(valid_inputs, quit_txt);

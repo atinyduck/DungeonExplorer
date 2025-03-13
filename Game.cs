@@ -69,17 +69,17 @@ namespace DungeonExplorer
 
         internal void SaveGame(string path)
         {
-
+            // Waiting for implementation
         }
 
         internal void DeleteSave(string path)
         {
-
+            // Waiting for implementation
         }
 
         internal bool CallSave(string path)
         {
-            return false;
+            return false; // Waiting for implementation
         }
 
         #endregion
