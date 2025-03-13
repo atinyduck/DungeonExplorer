@@ -177,7 +177,15 @@ Choose an option [1 - 3]";
                         break;
 
                     case "2": // Enter another room
-                        room.AdventureOn(player);
+                        // Ensure there is a room to move to.
+                        if (room.GetNeighbours().Count > 0)
+                        {
+                            room.AdventureOn(player);
+                        }
+                        else
+                        {
+                            DisplayMessage("You cannot push forward, you must go back.");
+                        }
                         break;
 
                     case "3":

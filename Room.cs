@@ -23,7 +23,7 @@ namespace DungeonExplorer
         private const string DescriptionSrc = "room_descriptions.txt";
 
         // Descriptions
-        private static readonly List<string> Descriptions = LoadDescriptions();
+        private readonly List<string> Descriptions = LoadDescriptions();
         private readonly string Description;
 
         private readonly List<string> Loot;
@@ -36,14 +36,18 @@ namespace DungeonExplorer
         /// <summary>
         /// Initializes a new instance of the <see cref="Room"/> class.
         /// </summary>
-        internal Room(int depth = 0, Random random = null)
+        internal Room(int depth = 0, Random random = null, List<string> available_descriptions = null)
         {
 
             this.rnd = random ?? new Random();
+            this.Descriptions = available_descriptions ?? LoadDescriptions();
 
+            // Generate new description
             if (Descriptions.Count != 0)
             {
                 this.Description = GenerateDescription();
+                // Remove used description from the list
+                Descriptions.Remove(this.Description);
             }
 
             // If the room has loot generate it
@@ -197,7 +201,7 @@ namespace DungeonExplorer
             {
                 return "A mysterious room with no description, you may have gone blind?";
             }
-            return Descriptions[rnd.Next(Descriptions.Count)];
+            return Descriptions[this.rnd.Next(Descriptions.Count)];
         }
 
         /// <summary>
@@ -236,7 +240,8 @@ namespace DungeonExplorer
                     }
 
                     // Make a new room
-                    Room new_neighbour = new Room(depth);
+                    Room new_neighbour = new Room(depth, this.rnd, new List<string>(this.Descriptions));
+
                     string direction = GetRandomDirection();
 
                     // Ensure direction is unique
