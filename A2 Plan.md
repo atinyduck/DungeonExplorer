@@ -2,12 +2,12 @@
 
 ## Objects
 - [Creature](#Creature)
-  - [Player](#Player-->-Creature)
-  - [Monster](#Monster-->-Creature)
+  - [Player](#Player-=>-Creature)
+  - [Monster](#Monster-=>-Creature)
 - [Item](#Item)
-    - [Weapon](#Weapon-->-Item)
-    - [Armour](#Armour-->-Item)
-    - [Potion](#Potion-->-Item)
+    - [Weapon](#Weapon-=>-Item)
+    - [Armour](#Armour-=>-Item)
+    - [Potion](#Potion-=>-Item)
 - [Inventory](#Inventory)
 - [GameMap](#GameMap)
 
@@ -29,12 +29,12 @@
 - **EquipWeapon**(Weapon weapon) : Equips a specified weapon.
 - **EquipArmour**(Armour armour) : Equips a specified armour.
 
-### Player -> Creature
+### Player => Creature
 #### Additional Attributes
 - **Experience** :: int: The players current experience, recieved from beating monsters
 - **Level** :: int: The players current level
 
-### Monster -> Creature
+### Monster => Creature
 #### Subclasses
 - **Clockwork Mage**: Weak, Fast attacks.
 - **Rusting Construct**: High Health, Slow attacks.
@@ -48,7 +48,7 @@
 #### Methods
 - **Use**(Creature target) : Abstract, depends on the class.
 
-### Weapon -> Item
+### Weapon => Item
 #### Additional Attributes
 - **DamageModifier** :: int: This will alter the user's damage.
 
@@ -56,7 +56,7 @@
 - **Use**() : Equips the weapon.
 - **ToString**() : Returns the weapon name, and description.
 
-### Armour -> Item
+### Armour => Item
 #### Additional Attributes
 - **DefenseModifier** :: int: This will alter the user's defense.
   
@@ -64,7 +64,7 @@
 - **Use**() : Equips the armour.
 - **ToString**() : Returns the armour name, and description.
 
-### Potion -> Item
+### Potion => Item
 #### Additional Attributes
 - **EffectType** :: Enum: The effect of the potion.
 - **EffectDuration** :: int: The time the effect lasts for.
@@ -72,7 +72,7 @@
 #### Overrides
 - **Use**() : Applies the effect of the potion.
 
-### Invetory
+### Inventory
 #### Methods
 - **AddItem**(Item item) : Add a new item to the inventory.
 - **RemoveItem**(Item item) : Remove an item from the inventory.
