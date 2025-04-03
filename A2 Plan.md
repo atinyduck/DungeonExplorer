@@ -1,10 +1,10 @@
 # Assessment 2 Plan Document
 
 ## Objects
-- [[!Creature]]
-- [[!Item]]
-- [[!Inventory]]
-- [[!GameMap]]
+- [Creature]
+- [Item]
+- [Inventory]
+- [GameMap]
 
 ### Creature
 #### Attributes
