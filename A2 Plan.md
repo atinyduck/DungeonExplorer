@@ -1,6 +1,11 @@
 # Assessment 2 Plan Document
 
 ## Objects
+- [[Creature]]
+- [[Item]]
+- [[Inventory]]
+- [[GameMap]]
+
 ### Creature
 #### Attributes
 - **Name** :: string: The creatures name.
