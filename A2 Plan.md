@@ -1,10 +1,15 @@
 # Assessment 2 Plan Document
 
 ## Objects
-- [Creature]
-- [Item]
-- [Inventory]
-- [GameMap]
+- [Creature](#Creature)
+  - [Player](#Player-::-Creature)
+  - [Monster](#Monster-::-Creature)
+- [Item](#Item)
+    - [Weapon](#Weapon-::-Item)
+    - [Armour](#Armour-::-Item)
+    - [Potion](#Potion-::-Item)
+- [Inventory](#Inventory)
+- [GameMap](#GameMap)
 
 ### Creature
 #### Attributes
