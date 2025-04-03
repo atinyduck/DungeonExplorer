@@ -77,10 +77,8 @@
 - **CurrentRoom** :: Room: The current room in focus.
 
 #### Methods
-- **MovePlayer**(string direction) : Moves the player a specifed direction through the map.
-
-#### Overrides
-- **ToString**() : Returns the room name, description and contents.
+- **MovePlayer**(Room neighbour) : Moves the player a specifed direction through the map.
+- **GetNeigbours**() : Returns the neighbours to the current room, used to move between.
 
 ## Interfaces
 ### IDamagable
