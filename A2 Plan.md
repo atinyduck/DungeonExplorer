@@ -29,21 +29,28 @@
 - **EquipArmour**(Armour armour): Equips a specified armour.
 
 ```csharp
-class Creature
+public abstract class Creature
 {
-  string Name {public get; private set;}
-  int Health {public get; private set;}
-  int MaxHealth {public get; private set;}
-  Inventory Inventory {public get; private set;}
-  int Defense {public get; private set;}
-  int AttackPower {public get; private set;}
-  Weapon EquippedWeapon {public get; private set;}
-  Armour EquippedArmour {public get; private set;}
+  string Name {get; private set;}
+  int Health {get; private set;}
+  int MaxHealth {get; private set;}
+  Inventory Inventory {get; private set;}
+  int Defense {get; private set;}
+  int AttackPower {get; private set;}
+  Weapon EquippedWeapon {get; private set;}
+  Armour EquippedArmour {get; private set;}
 
-  public Creature (...)
+  public Creature (string name, int max_health, int defense, int attack_power)
   {
-    ...
+    this.Name = name;
+    this.Health = maxHealth;
+    this.MaxHealth = maxHealth;
+    this.Inventory = new Inventory();
+    this.Defense = defense;
+    this.AttackPower = attack_power;
   }
+
+  public abstract void Attack();
 }
 ```
 
