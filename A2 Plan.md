@@ -16,6 +16,8 @@
 - **Health** :: int: The creature's health.
 - **MaxHealth** :: int: The creature's max health.
 - **Inventory** :: Invetory: Instance of inventory for the creatures items.
+- **BaseDefense** :: int: The defualt defense.
+- **BaseAttackPower** :: int: The base attack power.
 - **Defense** :: int: The defense statistic, modified by 'EquippedArmour'.
 - **AttackPower** :: int: The attack statistic, modified by 'EquippedWeapon'.
 - **EquippedWeapon** :: Weapon: Instance of weapon for the creature's current weapon, modifies attack power.
@@ -24,7 +26,7 @@
 #### Methods
 - **Heal**(int amount): Heals the creature a set amount; cannot go above MaxHealth.
 - **TakeDamage**(int amount): Damages the creature a set amount reduced by defense, which cannot go below 0.
-- **Attack**(IDamagable target): Deals damaged based on attack power.
+- **Attack**(IDamagable target): Abstract, deals damage based on attack power.
 - **EquipWeapon**(Weapon weapon): Equips a specified weapon.
 - **EquipArmour**(Armour armour): Equips a specified armour.
 
@@ -35,22 +37,51 @@ public abstract class Creature
   int Health {get; private set;}
   int MaxHealth {get; private set;}
   Inventory Inventory {get; private set;}
+  int BaseDefense {get; private set;}
+  int BaseAttackPower {get; private set;}
   int Defense {get; private set;}
   int AttackPower {get; private set;}
   Weapon EquippedWeapon {get; private set;}
   Armour EquippedArmour {get; private set;}
 
-  public Creature (string name, int max_health, int defense, int attack_power)
+  public Creature (string name, int max_health, int defense, int attackPower)
   {
     this.Name = name;
     this.Health = maxHealth;
     this.MaxHealth = maxHealth;
     this.Inventory = new Inventory();
+    this.BaseDefense = defense;
+    this.BaseAttackPower = attackPower;
     this.Defense = defense;
-    this.AttackPower = attack_power;
+    this.BaseAttackPower = attackPower;
   }
 
-  public abstract void Attack();
+  public abstract void Attack(IDamagable target);
+
+  public void TakeDamage(int amount)
+  {
+    int actualDamage = Math.Max(0, amount - this.Defense)
+    this.Health = Math.Max(0, this.Health - actualDamage)
+    // Display Damage
+  }
+
+  public void Heal(int amount)
+  {
+    this.Health = Math.Min(this.MaxHealth, this.Health + amount);
+    // Display Heal
+  }
+
+  public void EquipArmour(Armour armour)
+  {
+    this.EquippedArmour = armour;
+    this.Defense = this.BaseDefense + armour.DefenseModifier;
+  }
+  
+  public void EquipWeapon(Weapon weapon)
+  {
+    this.EquippedWeapon = weapon;
+    this.AttackPower = this.BaseAttackPower + weapon.DamageModifier 
+  }
 }
 ```
 
@@ -59,11 +90,23 @@ public abstract class Creature
 - **Experience** :: int: The player's current experience, received from beating monsters
 - **Level** :: int: The player's current level
 
+```csharp
+public class Player : Creature
+{
+}
+```
+
 ### Monster :: Creature
 #### Subclasses
 - **Clockwork Mage**: Weak, Fast attacks.
 - **Rusting Construct**: High Health, Slow attacks.
 - **Repair Unit**: Moderate Stats, Self-healing abilities.
+
+```csharp
+public class Monster : Creature
+{
+}
+```
 
 ### Item <a id="item"></a>
 #### Attributes
@@ -72,6 +115,12 @@ public abstract class Creature
 
 #### Methods
 - **Use**(Creature target): Abstract, depends on the class.
+
+```csharp
+public class Item
+{
+}
+```
 
 ### Weapon :: Item
 #### Additional Attributes
