@@ -13,7 +13,7 @@ namespace DungeonExplorer
     {
         #region String Constants
 
-        public const string TITLE = @"
+        internal const string TITLE = @"
 =================================================
                   RUST & RUIN                  
 =================================================
@@ -48,7 +48,7 @@ Before you lies a series of rooms, each more treacherous than the last.
 Do you have what it takes to navigate the dangers, claim the treasure, 
 and uncover the secrets of the Rust & Ruin?";
 
-        private const string MENU = @"In a forgotten realm consumed by corrosion and decay, each 
+        private const string MAIN = @"In a forgotten realm consumed by corrosion and decay, each 
 door leads deeper into the ruins of a kingdom lost to time. 
 Monsters lurk in shadowed corridors, and only those brave 
 enough can uncover the secrets hidden within.
@@ -59,8 +59,17 @@ succumb to the darkness?
 1. Enter the Ruins
 2. How to Play
 3. Abandon Quest
-4. Quit
+Q. Quit
 Choose your fate [1 - 4]";
+
+        private const string ROOM = @"What will you do next?
+
+1. Loot the room
+2. Adventure on
+3. Go Back
+4. Check Self
+Q. Quit Game
+Choose an option [1 - 3]";
 
         #endregion
 
@@ -70,7 +79,7 @@ Choose your fate [1 - 4]";
         /// Displays the message.
         /// </summary>
         /// <param name="message">The message.</param>
-        public static void DisplayMessage(string message, bool clear = false, bool wait = true)
+        internal static void DisplayMessage(string message, bool clear = false, bool wait = true)
         {
             if (clear) Console.Clear();
 
@@ -83,7 +92,7 @@ Choose your fate [1 - 4]";
         /// Displays the intro.
         /// </summary>
         /// <param name="player">The player.</param>
-        public static void DisplayIntro(Player player)
+        internal static void DisplayIntro(Player player)
         {
             // Get a new name input from the user
             player.Name = GetInput(new List<string>(), (TITLE + INTRO), false);
@@ -96,15 +105,15 @@ Choose your fate [1 - 4]";
         /// <summary>
         /// Displays the menu.
         /// </summary>
-        public static void DisplayMenu()
+        internal static void DisplayMenu()
         {
             bool playing = true;
             while (playing)
             {
-                List<string> menu_options = new List<string>() { "1", "2", "3", "4" };
-                string menu_input = GetInput(menu_options, TITLE + MENU);
+                List<string> menu_options = new List<string>() { "1", "2", "3", "Q", "D"};
+                string menu_input = GetInput(menu_options, TITLE + MAIN);
 
-                switch (menu_input)
+                switch (menu_input.ToUpper())
                 {
                     case "1":
                         // Start the game
@@ -120,12 +129,17 @@ Choose your fate [1 - 4]";
                         DisplayMessage(TITLE + "Waiting on implementation", true);
                         continue;
 
-                    case "4":
+                    case "Q":
                         // Quit the game
                         if (ConfirmQuit())
                         {
                             Environment.Exit(0);
                         }
+                        break;
+
+                    case "D":
+                        // Debugging 
+                        Testing.TestMenu();
                         break;
 
                     default:
@@ -137,10 +151,72 @@ Choose your fate [1 - 4]";
             }
         }
 
+
+        /// <summary>
+        /// Displays the room.
+        /// </summary>
+        /// <param name="player">The current player.</param>
+        /// <param name="room">The current room</param>
+        internal static void DisplayRoom(Room room, Player player)
+        {
+            bool in_room = true;
+            while (in_room)
+            {
+                // Outputs strings
+                string room_menu = TITLE + room.ToString() + ROOM;
+
+                // Get the player's choice
+                List<string> room_options = new List<string>() { "1", "2", "3", "4", "Q" };
+                string choice = GetInput(room_options, room_menu);
+
+                // Compare their choice
+                switch (choice.ToUpper())
+                {
+                    case "1": // Loot the room
+                        room.LootRoom(player);
+                        break;
+
+                    case "2": // Enter another room
+                        // Ensure there is a room to move to.
+                        if (room.GetNeighbours().Count > 0)
+                        {
+                            room.AdventureOn(player);
+                        }
+                        else
+                        {
+                            DisplayMessage("You cannot push forward, you must go back.");
+                        }
+                        break;
+
+                    case "3":
+                        in_room = false;
+                        break;
+
+                    case "4": // Check the player's stats
+                        GameUI.DisplayMessage(player.ToString());
+                        break;
+
+                    case "Q": // Quit game
+
+                        // If the user wants to quit return to main menu
+                        if (ConfirmQuit())
+                        {
+                            DisplayMenu();
+                        }
+                        else
+                        {
+                            DisplayRoom(room, player);
+                        }
+                        break;
+                }
+            }
+        }
+
+
         /// <summary>
         /// Displays how to play the game.
         /// </summary>
-        public static void DisplayHowTo()
+        internal static void DisplayHowTo()
         {
             DisplayMessage(TITLE + "Waiting on implementation", true);
         }
@@ -155,7 +231,7 @@ Choose your fate [1 - 4]";
         /// <param name="valid_inputs">The valid inputs.</param>
         /// <param name="output">The output.</param>
         /// <returns>string: The user's input.</returns>
-        public static string GetInput(List<string> valid_inputs, string output, bool enforce_validation = true)
+        internal static string GetInput(List<string> valid_inputs, string output, bool enforce_validation = true)
         {
             string input = null;
 
@@ -182,9 +258,13 @@ Choose your fate [1 - 4]";
             }
         }
 
-        public static bool ConfirmQuit()
+        /// <summary>
+        /// Confirm if the user wants to quit.
+        /// </summary>
+        /// <returns>bool: If the input is 'Y'</returns>
+        internal static bool ConfirmQuit()
         {
-            string quit_txt = "Are you sure you want to quit? [ Y/N ]";
+            string quit_txt = "Are you sure you want to quit? [ Y/N ]\nUnsaved progress will be deleted.";
 
             List<string> valid_inputs = new List<string>() { "Y", "N" };
             string quit_input = GetInput(valid_inputs, quit_txt);
@@ -192,7 +272,10 @@ Choose your fate [1 - 4]";
             return quit_input.ToUpper() == "Y";
         }
 
-        public static void WaitForInput()
+        /// <summary>
+        /// Waits for input from the user.
+        /// </summary>
+        internal static void WaitForInput()
         {
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();

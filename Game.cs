@@ -17,7 +17,7 @@ namespace DungeonExplorer
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class.
         /// </summary>
-        public Game()
+        internal Game()
         {
             // Initialize the game with one room and one player
             this.player = new Player("NAME", 100);
@@ -26,9 +26,9 @@ namespace DungeonExplorer
         }
 
         /// <summary>
-        /// Starts this instance.
+        /// Starts this instance of 'Game'.
         /// </summary>
-        public void Start()
+        internal void Start()
         {
             GameUI.DisplayMenu();
 
@@ -45,7 +45,9 @@ namespace DungeonExplorer
 
         #region Game Control
 
-
+        /// <summary>
+        /// Runs the main game loop.
+        /// </summary>
         private void GameLoop()
         {
             bool running = true;
@@ -54,7 +56,7 @@ namespace DungeonExplorer
             {
                 VisitedRooms.Add(CurrentRoom);
 
-                CurrentRoom.DisplayRoom(player);
+                GameUI.DisplayRoom(current_room, player);
             }
         }
 
@@ -66,19 +68,19 @@ namespace DungeonExplorer
 
         #region Save Control
 
-        public void SaveGame(string path)
+        internal void SaveGame(string path)
         {
-
+            // Waiting for implementation
         }
 
-        public void DeleteSave(string path)
+        internal void DeleteSave(string path)
         {
-
+            // Waiting for implementation
         }
 
-        public bool CallSave(string path)
+        internal bool CallSave(string path)
         {
-            return false;
+            return false; // Waiting for implementation
         }
 
         #endregion

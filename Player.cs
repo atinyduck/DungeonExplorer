@@ -4,11 +4,11 @@ using System.Reflection;
 
 namespace DungeonExplorer
 {
-    public class Player
+    internal class Player
     {
-        public string Name { get; set; }
-        public int Health { get; private set; }
-        private int MaxHealth;
+        internal string Name { get; set; }
+        internal int Health { get; private set; }
+        internal int MaxHealth;
         private readonly List<string> inventory = new List<string>();
 
         /// <summary>
@@ -16,7 +16,7 @@ namespace DungeonExplorer
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="health">The health.</param>
-        public Player(string name, int health) 
+        internal Player(string name, int health) 
         {
             Name = name;
             Health = health;
@@ -31,18 +31,22 @@ namespace DungeonExplorer
         /// </returns>
         public override string ToString()
         {
-            const string Title = "\r\n=================================================\r\n                  PLAYER STATS                  \r\n=================================================";
+            const string Title = "\r\n=================================================" +
+                "\r\n                  PLAYER STATS                  \r\n" +
+                "=================================================";
 
             string Stats = $"\r\nName: {this.Name} \r\nHP: {this.Health} \r\n\r\nInventory:\r\n{this.GetInventoryContents()}\r\n";
 
             return Title + Stats;
         }
 
+        internal List<string> GetInventory() => inventory;
+
         /// <summary>
         /// Picks up item.
         /// </summary>
         /// <param name="item">The item.</param>
-        public void PickUpItem(string item)
+        internal void PickUpItem(string item)
         {
             inventory.Add(item);
         }
@@ -51,7 +55,7 @@ namespace DungeonExplorer
         /// Heals the specified amount up to Max Health.
         /// </summary>
         /// <param name="amount">The amount.</param>
-        public void Heal(int amount)
+        internal void Heal(int amount)
         { 
             this.Health += amount;
             if (this.Health > this.MaxHealth)
@@ -64,7 +68,7 @@ namespace DungeonExplorer
         /// Makes the player take damage.
         /// </summary>
         /// <param name="amount">The amount.</param>
-        public void TakeDamage(int amount)
+        internal void TakeDamage(int amount)
         {
             this.Health -= amount;
             if (this.Health < 0) this.Health = 0;
