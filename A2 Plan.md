@@ -12,73 +12,92 @@
 
 ### Creature <a id="creature"></a>
 #### Attributes
-- **Name** :: string: The creatures name.
-- **Health** :: int: The creatures health.
-- **MaxHealth** :: int: The creatures max health.
+- **Name** :: string: The creature's name.
+- **Health** :: int: The creature's health.
+- **MaxHealth** :: int: The creature's max health.
 - **Inventory** :: Invetory: Instance of inventory for the creatures items.
 - **Defense** :: int: The defense statistic, modified by 'EquippedArmour'.
 - **AttackPower** :: int: The attack statistic, modified by 'EquippedWeapon'.
-- **EquippedWeapon** :: Weapon: Instance of weapon for the creatures current weapon, modifies attack power.
-- **EquippedArmour** :: Armour: Instance of armour for the creatures current armour, modifies defence.
+- **EquippedWeapon** :: Weapon: Instance of weapon for the creature's current weapon, modifies attack power.
+- **EquippedArmour** :: Armour: Instance of armour for the creature's current armour, modifies defence.
 
 #### Methods
-- **Heal**(int amount) : Heals the creature a set amount, cannot go above MaxHealth.
-- **TakeDamage**(int amount) : Damages the creature a set amount reduced by defense, cannot go below 0.
-- **Attack**(IDamagable target) : Deals damaged based on attack power.
-- **EquipWeapon**(Weapon weapon) : Equips a specified weapon.
-- **EquipArmour**(Armour armour) : Equips a specified armour.
+- **Heal**(int amount): Heals the creature a set amount; cannot go above MaxHealth.
+- **TakeDamage**(int amount): Damages the creature a set amount reduced by defense, which cannot go below 0.
+- **Attack**(IDamagable target): Deals damaged based on attack power.
+- **EquipWeapon**(Weapon weapon): Equips a specified weapon.
+- **EquipArmour**(Armour armour): Equips a specified armour.
+
+```csharp
+class Creature
+{
+  string Name {public get; private set;}
+  int Health {public get; private set;}
+  int MaxHealth {public get; private set;}
+  Inventory Inventory {public get; private set;}
+  int Defense {public get; private set;}
+  int AttackPower {public get; private set;}
+  Weapon EquippedWeapon {public get; private set;}
+  Armour EquippedArmour {public get; private set;}
+
+  public Creature (...)
+  {
+    ...
+  }
+}
+```
 
 ### Player :: Creature
 #### Additional Attributes
-- **Experience** :: int: The players current experience, recieved from beating monsters
-- **Level** :: int: The players current level
+- **Experience** :: int: The player's current experience, received from beating monsters
+- **Level** :: int: The player's current level
 
 ### Monster :: Creature
 #### Subclasses
 - **Clockwork Mage**: Weak, Fast attacks.
 - **Rusting Construct**: High Health, Slow attacks.
-- **Repair Unit**: Moderate Stats, Self healing abilities.
+- **Repair Unit**: Moderate Stats, Self-healing abilities.
 
 ### Item <a id="item"></a>
 #### Attributes
-- **Name** :: string: The items name.
-- **Description** :: string: The items description.
+- **Name** :: string: The item's name.
+- **Description** :: string: The item's description.
 
 #### Methods
-- **Use**(Creature target) : Abstract, depends on the class.
+- **Use**(Creature target): Abstract, depends on the class.
 
 ### Weapon :: Item
 #### Additional Attributes
 - **DamageModifier** :: int: This will alter the user's damage.
 
 #### Overrides
-- **Use**() : Equips the weapon.
-- **ToString**() : Returns the weapon name, and description.
+- **Use**(): Equips the weapon.
+- **ToString**(): Returns the weapon name and description.
 
 ### Armour :: Item
 #### Additional Attributes
 - **DefenseModifier** :: int: This will alter the user's defense.
   
 #### Overrides
-- **Use**() : Equips the armour.
-- **ToString**() : Returns the armour name, and description.
+- **Use**(): Equips the armour.
+- **ToString**(): Returns the armour name and description.
 
 ### Potion :: Item
 #### Additional Attributes
 - **EffectType** :: Enum: The effect of the potion.
-- **EffectDuration** :: int: The time the effect lasts for.
+- **EffectDuration** :: int: The time the effect lasts.
 
 #### Overrides
-- **Use**() : Applies the effect of the potion.
+- **Use**(): Applies the effect of the potion.
 
 ### Inventory <a id="inventory"></a>
 #### Methods
-- **AddItem**(Item item) : Add a new item to the inventory.
-- **RemoveItem**(Item item) : Remove an item from the inventory.
-- **ListWeapons**() : Returns a list of all 'Weapons' in the inventory.
-- **ListArmour**() : Returns a list of all 'Armour' in the inventory.
-- **FindBestWeapon**() : Returns the strongest 'Weapon' in the inventory.
-- **FindBestArmour**() : Returns the strongest 'Armour' in the inventory.
+- **AddItem**(Item item): Add a new item to the inventory.
+- **RemoveItem**(Item item): Remove an item from the inventory.
+- **ListWeapons**(): Returns a list of all 'Weapons' in the inventory.
+- **ListArmour**(): Returns a list of all 'Armour' in the inventory.
+- **FindBestWeapon**(): Returns the strongest 'Weapon' in the inventory.
+- **FindBestArmour**(): Returns the strongest 'Armour' in the inventory.
 
 ### GameMap <a id="gamemap"></a>
 #### Attributes
@@ -86,8 +105,8 @@
 - **CurrentRoom** :: Room: The current room in focus.
 
 #### Methods
-- **MovePlayer**(Room neighbour) : Moves the player a specifed direction through the map.
-- **GetNeigbours**() : Returns the neighbours to the current room, used to move between.
+- **MovePlayer**(Room neighbour): Moves the player a specified direction through the map.
+- **GetNeigbours**(): Returns the neighbours to the current room, used to move between.
 
 ## Interfaces <a id="interfaces"></a>
 ### IDamagable
@@ -97,5 +116,8 @@ Applied to 'Player' and 'Monster'.
 ### ICollectible
 Applied to 'Item'.
 - Use(Creature target)
+
+
+## Testing 
 
 *Jake Morgan* *29160569*
