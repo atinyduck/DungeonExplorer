@@ -11,8 +11,8 @@ namespace DungeonExplorer
     internal class Game
     {
         private readonly Player player;
-        private readonly Room current_room;
-        private readonly List<Room> visited_rooms = new List<Room>();
+        private readonly Room CurrentRoom;
+        private readonly List<Room> VisitedRooms;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class.
@@ -21,7 +21,8 @@ namespace DungeonExplorer
         {
             // Initialize the game with one room and one player
             this.player = new Player("NAME", 100);
-            this.current_room = new Room();
+            this.CurrentRoom = new Room();
+            this.VisitedRooms = new List<Room>();
         }
 
         /// <summary>
@@ -51,9 +52,9 @@ namespace DungeonExplorer
             
             while (running)
             {
-                visited_rooms.Add(current_room);
+                VisitedRooms.Add(CurrentRoom);
 
-                current_room.DisplayRoom(player);
+                CurrentRoom.DisplayRoom(player);
             }
         }
 
