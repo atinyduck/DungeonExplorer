@@ -13,7 +13,7 @@
 ### Enums
 #### BaseSatistic
 - Contains all base stats
-```chsarp
+```csharp
 public Enum BaseStatistic
 {
     Defense,
@@ -24,7 +24,7 @@ public Enum BaseStatistic
 
 #### PotionEffect
 - Contains all potion types.
-```chsarp
+```csharp
 public Enum PotionEffect
 {
     Heal,
@@ -256,7 +256,7 @@ public class Monster : Creature
     - Overrides Attack().
 
 ```csharp
-public class ClockworkMage: Monster
+public class ClockworkMage : Monster
 {
     public ClockworkMage()
          : base("Clockwork Mage", maxHealth:~, defense:~, attackPower:~, rewardXP:~)
@@ -278,7 +278,7 @@ public class ClockworkMage: Monster
     - Overrides Attack() and GenerateDrops().
 
 ```csharp
-public class RustingConstruct: Monster
+public class RustingConstruct : Monster
 {
     public RustingConstruct()
          : base("Rusting Construct", maxHealth:~, defense:~, attackPower:~, rewardXP:~)
@@ -309,9 +309,9 @@ public class RustingConstruct: Monster
     - Overrides Attack().
   
 ```csharp
-public class ClockworkMage: Monster
+public class RepairUnit : Monster
 {
-    public ClockworkMage()
+    public RepairUnit()
          : base("Clockwork Mage", maxHealth:~, defense:~, attackPower:~, rewardXP:~)
     {}
 
@@ -449,7 +449,7 @@ public class Potion : Item
 
 #### Additional Methods
 - **ApplyPoison**(Creature target): Apply posion to a creature.
-- **ApplyBuff**(Creature target, string stat): Apply a buff to a specific creature's stats.
+- **ApplyBuff**(Creature target, BaseStatistic stat): Apply a buff to a specific creature's stats.
 
 ```csharp
     public void ApplyPoison(Creature target)
@@ -466,7 +466,7 @@ public class Potion : Item
         }
     }
 
-    public void ApplyBuff(Creature target, string stat)
+    public void ApplyBuff(Creature target, BaseStatistics stat)
     {
         if (EffectDuration > 0)
         {
@@ -474,8 +474,23 @@ public class Potion : Item
         }
         else \\Permanent buff
         {
-            target.TakeDamage(EffectPower)
-            \\Display poison info
+            int amount = EffectPower
+            switch(stat)
+                case BaseStatistics.AttackPower:
+                    amount += target.BaseAttackPower
+                    break;
+
+            switch(stat)
+                case BaseStatistics.Defense:
+                    amount += target.BaseDefense
+                    break;
+
+            switch(stat)
+                case BaseStatistics.MaxHealth:
+                    amount += target.MaxHealth
+                    break;
+
+            ModifyBaseStat(stat, amount) 
         }
     }
 ```
