@@ -188,7 +188,7 @@ public class Monster : Creature
 - **GenerateDrops** :: int: The 'Items' granted on the monster's defeat.
 - Plan to maybe add JSON with loot tables.
   
-```
+```csharp
     public virtual List<Item> GenerateDrops()
     {
         var drops = new List<Item>();
