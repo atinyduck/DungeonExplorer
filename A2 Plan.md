@@ -10,6 +10,31 @@
 
 ## Objects <a id="objects"></a>
 
+### Enums
+#### BaseSatistic
+- Contains all base stats
+```chsarp
+public Enum BaseStatistic
+{
+    Defense,
+    AttackPower,
+    MaxHealth
+}
+```
+
+#### PotionEffect
+- Contains all potion types.
+```chsarp
+public Enum PotionEffect
+{
+    Heal,
+    Poison,
+    StrengthBuff,
+    DefenseBuff,
+    Invisibility
+}
+```
+
 ### Creature <a id="creature"></a>
 #### Attributes
 - **Name** :: string: The creature's name.
@@ -56,6 +81,8 @@ public abstract class Creature
 - **Attack**(IDamagable target): Abstract, deals damage based on attack power.
 - **EquipWeapon**(Weapon weapon): Equips a specified weapon.
 - **EquipArmour**(Armour armour): Equips a specified armour.
+- **ModifyBaseStat(Enum stat): Modifies a specified base stat.
+- **RecalculateStats**(): Recalculate variable stats.
 
 ```csharp
     public abstract void Attack(IDamagable target);
@@ -76,13 +103,38 @@ public abstract class Creature
     public void EquipArmour(Armour armour)
     {
         EquippedArmour = armour;
-        Defense = BaseDefense + armour.DefenseModifier;
+        RecalculateStats() 
     }
 
     public void EquipWeapon(Weapon weapon)
     {
         EquippedWeapon = weapon;
-        AttackPower = BaseAttackPower + weapon.DamageModifier 
+        RecalculateStats() 
+    }
+
+    public void ModifyBaseStat(BaseStatistic stat, int newValue)
+    {
+        switch (stat)
+        {
+            case BaseStatistics.Defense:
+                BaseDefense = newValue;
+                break;
+            case BaseStatistics.AttackPower:
+                BaseAttackPower = newValue;
+                break;
+            case BaseStatistics.MaxHealth:
+                MaxHealth = newValue;
+                // If max is reduced, ensure health does not exceed it.
+                Health = Math.Min(Health, MaxHealth) 
+                break;
+        }
+        RecalculateStats();       
+    }
+
+    public void RecalculateStats()
+    {
+        AttackPower = BaseAttackPower + EquippedWeapon?.DamageModifier;
+        Defense = BaseDefense + EquippedArmour?.DefenseModifier;
     }
 ```
 
@@ -137,13 +189,11 @@ public class Player : Creature
     {
         // Increase Stats
         Level++;
-        MaxHealth += 10;
-        Health = MaxHealth;
-        BaseAttackPower += 2;
-        BaseDefense += 1;
-        // Reapply bonuses
-        EquipWeapon(EquippedWeapon);
-        EquipArmour(EquippedArmour);
+        ModfiyBaseStat(BaseStatistics.MaxHealth, MaxHealth + 10);
+        ModfiyBaseStat(BaseStatistics.AttackPower, BaseAttackPower + 2);
+        ModfiyBaseStat(BaseStatistics.Defense, BaseDefense + 1);
+        Heal(MaxHealth);
+
         //Display level up
     }
 
@@ -203,7 +253,7 @@ public class Monster : Creature
 
 #### Subclasses
 - **Clockwork Mage**: Weak, Fast attacks.
-    - Overrides Attack() and GenerateDrops().
+    - Overrides Attack().
 
 ```csharp
 public class ClockworkMage: Monster
@@ -216,7 +266,8 @@ public class ClockworkMage: Monster
     {
         for (int i = 0; i < 2; i++)
         {
-            target.TakeDamage(AttackPower / 2);
+            int damage = AttackPower / 2;
+            target.TakeDamage(damage);
             //Display attack
         }
     }
@@ -224,6 +275,7 @@ public class ClockworkMage: Monster
 ```
 
 - **Rusting Construct**: High Health, Heavy attacks.
+    - Overrides Attack() and GenerateDrops().
 
 ```csharp
 public class RustingConstruct: Monster
@@ -234,7 +286,8 @@ public class RustingConstruct: Monster
 
     public override void Attack(IDamageable target)
     {
-        target.TakeDamage(AttackPower);
+        int damage = AttackPower;
+        target.TakeDamage(damage);
         //Display attack        
     }
 
@@ -253,7 +306,8 @@ public class RustingConstruct: Monster
 ```
   
 - **Repair Unit**: Moderate Stats, Self-healing abilities.
-
+    - Overrides Attack().
+  
 ```csharp
 public class ClockworkMage: Monster
 {
@@ -263,8 +317,9 @@ public class ClockworkMage: Monster
 
     public override void Attack(IDamageable target)
     {
-        target.TakeDamage(AttackPower);
-        //Display attack
+        int damage = AttackPower;
+        target.TakeDamage(damage);
+        //Display attack   
 
         if (Random.Next(0, 4) == 0)
         {
@@ -332,7 +387,8 @@ public class Weapon : Item
 
     public override Use(Creature target)
     {
-        target.EquipWeapon(...)
+        target.EquipWeapon(this)
+        \\Display equipped weapon
     }
 ```
 
@@ -364,7 +420,8 @@ public class Armour : Item
 
     public override Use(Creature target)
     {
-        target.EquipArmour(...)
+        target.EquipArmour(this)
+        \\Display equipped weapon
     }
 ```
 
@@ -372,18 +429,54 @@ public class Armour : Item
 #### Additional Attributes
 - **EffectType** :: Enum: The effect of the potion.
 - **EffectDuration** :: int: The time the effect lasts; -1 implies an instant effect.
+- **EffectPower** :: int: The strength of the effect.
 
 ```csharp
 public class Potion : Item
 {
-    public Enum EffectType {get; private set}
+    public PotionEffect EffectType {get; private set}
     public int EffectDuration {get; private set}
+    public int EffectPower {get: private set}
 
-    public Weapon (string name, string description, Enum EffectType, int effectDuration)
+    public Weapon (string name, string description, Enum type, int duration, int power)
          : base (name, description)
     {
-        EffectType = effectType;
-        EffectDuration = effectDuration
+        EffectType = type;
+        EffectDuration = duration;
+        EffectPower = power; // -1 Refers to instant effects, e.g. Heal.
+    }
+```
+
+#### Additional Methods
+- **ApplyPoison**(Creature target): Apply posion to a creature.
+- **ApplyBuff**(Creature target, string stat): Apply a buff to a specific creature's stats.
+
+```csharp
+    public void ApplyPoison(Creature target)
+    {
+        if (EffectDuration > 0)
+        {
+            \\Poison for multiple turns
+            \\Used if status effects are implemented
+        }
+        else
+        {
+            target.TakeDamage(EffectPower)
+            \\Display poison info
+        }
+    }
+
+    public void ApplyBuff(Creature target, string stat)
+    {
+        if (EffectDuration > 0)
+        {
+            \\Temprory stat increase
+        }
+        else \\Permanent buff
+        {
+            target.TakeDamage(EffectPower)
+            \\Display poison info
+        }
     }
 ```
 
@@ -393,7 +486,22 @@ public class Potion : Item
 ```csharp
     public override Use(Creature target)
     {
-        target.Heal(...) \\ Heal 
+        switch (EffectType)
+        {
+            case PotionEffect.Heal:
+                target.Heal(EffectPower)
+                \\Display Heal
+                break;
+            case PotionEffect.Posion:
+                ApplyPosion()
+                break;
+            case PotionEffect.Heal:
+                \\Heal
+                break;
+            case PotionEffect.Heal:
+                \\Heal
+                break;
+        }
     }
 ```
 
