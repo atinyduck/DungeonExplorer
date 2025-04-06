@@ -124,7 +124,7 @@ public abstract class Creature
                 break;
             case BaseStatistics.MaxHealth:
                 MaxHealth = newValue;
-                // If max is reduced, ensure health does not exceed it.
+                // If the max is reduced, ensure that health does not exceed it.
                 Health = Math.Min(Health, MaxHealth) 
                 break;
         }
@@ -507,14 +507,21 @@ public class Potion : Item
                 target.Heal(EffectPower)
                 \\Display Heal
                 break;
+
             case PotionEffect.Posion:
-                ApplyPosion()
+                ApplyPosion(target)
                 break;
-            case PotionEffect.Heal:
-                \\Heal
+
+            case PotionEffect.StrengthBuff:
+                ApplyBuff(target, BaseStatistic.AttackPower)
                 break;
-            case PotionEffect.Heal:
-                \\Heal
+
+            case PotionEffect.DefenseBuff:
+                ApplyBuff(target, BaseStatistic.Defense)
+                break;
+
+            case PotionEffect.Invisibility:
+                \\ Possible future implementation stopping being attacked
                 break;
         }
     }
