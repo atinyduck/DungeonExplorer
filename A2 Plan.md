@@ -527,12 +527,24 @@ public class Potion : Item
 
 ### Inventory <a id="inventory"></a>
 #### Attributes
-- **Contents** :: List<Item>: Stores all the items in the inventory.
+- **_items** :: List<Item>: Private variable to store all the items in the inventory.
+- **Items** :: IReadOnlyList<Item>: Public readonly list of _items.
+- **Count** :: The amount of items in inventory.
+- **BestWeapon** :: Weapon: The best weapon in the inventory.
+- **BestArmour** :: Armour: The best armour in the inventory.
 
-```csharo
+```csharp
 public class Inventory
 {
-    public 
+    private List<Item> _items = new List<Item>();
+
+    public IReadOnlyList<Item> Items => _items.AsReadOnly();
+
+    public int Count => _items.Count;
+
+    public Weapon BestWeapon => FindBestWeapon();
+
+    public Armour BestArmour => FindBestArmour();
 ```
 
 #### Methods
@@ -540,16 +552,56 @@ public class Inventory
 - **AddItem**(Item item): Add a new item to the inventory.
 - **RemoveItem**(Item item): Remove an item from the inventory.
 - **Clear**(): Clears the inventory.
-- **GetCount**(): Returns the total items.
 - **ListWeapons**(): Returns a list of all 'Weapons' in the inventory.
+- **FindBestWeapon**(): Returns the best 'Weapon'.
 - **ListArmour**(): Returns a list of all 'Armour' in the inventory.
-- **FindBestWeapon**(): Returns the strongest 'Weapon' in the inventory.
-- **FindBestArmour**(): Returns the strongest 'Armour' in the inventory.
+- **FindBestArmour**(): Returns the best 'Armour'.
 
+```csharp
+    public bool HasItem(Item item) => Contents.Contains(item);
+
+    public void AddItem(Item item)
+    {
+        if (item == null) throw new ArgumentNullException(nameof(item));
+        _items.Add(item);
+    }
+
+    public void RemoveItem(Item item) => _items.Remove(item);
+
+    public void Clear() => _items.Clear();
+
+    public List<Weapon> ListWeapons() => _items.OfType<Weapon>().ToList();
+    
+    private Weapon FindBestWeapon() =>
+        ListWeapon()
+            .OrderByDescending(w => w.DamageModifier)
+            .FirstOrDefault(); 
+    
+
+    public List<Armour> ListArmour() => _items.OfType<Armour>().ToList();
+    
+    private Armour FindBestArmour() =>
+        ListWeapon()
+            .OrderByDescending(a => a.DefenseModifier)
+            .FirstOrDefault(); 
+```
+
+#### Overrides
+- **ToString**(): Displays the contents of the inventory.
+
+```csharp
+    public override string ToString()
+    {
+        // Display Inventory
+    }
+}
+```
 
 ### GameMap <a id="gamemap"></a>
 #### Attributes
-- **Rooms** :: List<Room>: A list of all rooms in the game.
+- **_rooms** :: List<Room> : Private readonly list of all rooms in the game.
+- 
+- **Rooms** :: IReadOnlyList<Room>: A readlonly list of all rooms in the game.
 - **CurrentRoom** :: Room: The current room in focus.
 
 #### Methods
