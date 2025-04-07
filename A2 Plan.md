@@ -480,12 +480,10 @@ public class Potion : Item
                     amount += target.BaseAttackPower
                     break;
 
-            switch(stat)
                 case BaseStatistics.Defense:
                     amount += target.BaseDefense
                     break;
 
-            switch(stat)
                 case BaseStatistics.MaxHealth:
                     amount += target.MaxHealth
                     break;
@@ -528,13 +526,26 @@ public class Potion : Item
 ```
 
 ### Inventory <a id="inventory"></a>
+#### Attributes
+- **Contents** :: List<Item>: Stores all the items in the inventory.
+
+```csharo
+public class Inventory
+{
+    public 
+```
+
 #### Methods
+- **HasItem**(Item item): Checks if the inventory has the item.
 - **AddItem**(Item item): Add a new item to the inventory.
 - **RemoveItem**(Item item): Remove an item from the inventory.
+- **Clear**(): Clears the inventory.
+- **GetCount**(): Returns the total items.
 - **ListWeapons**(): Returns a list of all 'Weapons' in the inventory.
 - **ListArmour**(): Returns a list of all 'Armour' in the inventory.
 - **FindBestWeapon**(): Returns the strongest 'Weapon' in the inventory.
 - **FindBestArmour**(): Returns the strongest 'Armour' in the inventory.
+
 
 ### GameMap <a id="gamemap"></a>
 #### Attributes
