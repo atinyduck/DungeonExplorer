@@ -1,18 +1,67 @@
 # Assessment 2 Plan Document
 
 ## Table of Contents
+- [Brief](#brief)
 - [Objects](#objects)
-  - [Creature](#creature)
-  - [Item](#item)
-  - [Inventory](#inventory)
-  - [GameMap](#gamemap)
-- [Interfaces](#interfaces)
+    - [Creature](#creature)
+    - [Item](#item)
+    - [Inventory](#inventory)
+    - [GameMap](#gamemap)
+    - [Interfaces](#interfaces)
+- [Testing](#testing)
+
+## Brief <a id="brief"></a>
+
+This is Assessment 2 and is an individual assignment.
+After a successful first stage interview where you demonstrated use of Git, code review and basic object-oriented principles, you have been asked to demonstrate further object-oriented principles in a second interview:
+
+### Coding Task Guidelines:
+Expand the “Dungeon Explorer” with advanced OO principles and features:
+
+#### Add new classes:
+- Monster: Represents creatures in rooms.
+- Item: Represents multiple types of items like weapons or
+potions.
+- Inventory: A collection to manage items.
+- GameMap: Manages multiple interconnected rooms.
+#### Encapsulation and Abstraction
+- Create hierarchies for:
+    - Creature (abstract class): Player and Monster inherit from this class.
+    - Item: Subclasses such as Weapon and Potion.
+#### Interfaces
+- Implement interfaces like IDamageable (applied to both Player and Monster) and ICollectible (applied to items).
+
+#### LINQs and Lambda Expressions:
+- Use LINQs to filter inventory items (e.g., all weapons) or find the strongest monster in a room.
+- Use lambda expressions for sorting or filtering.
+  
+#### Static and Dynamic Polymorphism:
+- Implement polymorphic methods:
+    - Different monsters (e.g., Goblin vs. Dragon) have different attack behaviors.
+    - Items (e.g., Potion vs. Weapon) have unique effects when used.
+      
+#### Error Checking:
+- Enhance error checking for invalid commands or interactions (e.g., trying to use a non-existent item).
+  
+#### Game Expansion:
+- The player can now:
+    - Navigate through multiple rooms.
+    - Battle monsters with varying difficulty.
+    - Manage an inventory with multiple items.
+    - 
+### Summary
+Read the Coding Task Guidelines and perform the following:
+- Develop a working solution which showcases your knowledge of the C# language, and object-oriented principles.
+- Implement a testing strategy for the solution.
+- Create a 5-minute video in which you demonstrate your solution and in particular, its object-oriented features. TA penalty will be applied if you exceed the suggested video duration.
+- Fill in the self-reflective assessment of the task using the report template supplied.
 
 ## Objects <a id="objects"></a>
 
 ### Enums
 #### BaseSatistic
 - Contains all base stats
+  
 ```csharp
 public Enum BaseStatistic
 {
@@ -24,6 +73,7 @@ public Enum BaseStatistic
 
 #### PotionEffect
 - Contains all potion types.
+  
 ```csharp
 public Enum PotionEffect
 {
@@ -33,6 +83,44 @@ public Enum PotionEffect
     DefenseBuff,
     Invisibility
 }
+```
+
+#### Directon
+- Contains all directions that rooms can be connected.
+  
+```csharp
+public enum Direction
+{
+    North,
+    East,
+    South,
+    West
+}
+```
+### Interfaces <a id="interfaces"></a>
+#### IDamagable
+Applied to 'Player' and 'Monster'.
+- TakeDamage(int amount)
+
+```csharp
+public Interface IDamageable
+{
+    void TakeDamage(int amount)
+    int Health { get; }
+    int MaxHealth { get; }
+}
+```
+
+#### ICollectable
+Applied to 'Item'.
+- Use(Creature target)
+
+```csharp
+public interface ICollectable
+{
+    void Use(Creature target)
+    string Name { get; }
+    string Description { get; }
 ```
 
 ### Creature <a id="creature"></a>
@@ -156,7 +244,7 @@ public abstract class Creature
 - **Level** :: int: The player's current level
 
 ```csharp
-public class Player : Creature
+public class Player : Creature, IDamageable
 {
     public int Experience {get; private set;}
     public int Level {get; private set;} = 1;
@@ -223,7 +311,7 @@ public class Player : Creature
 - **RewardXP** :: int: The amount of experience granted on the monster's defeat.
 
 ```csharp
-public class Monster : Creature
+public class Monster : Creature, IDamageable
 {
     public int RewardXP {get; private set;}
 
@@ -337,7 +425,7 @@ public class RepairUnit : Monster
 - **Description** :: string: The item's description.
 
 ```csharp
-public class Item
+public class Item: ICollectable
 {
     public string Name {get; private set;}
     public string Description {get; private set;}
@@ -536,9 +624,9 @@ public class Potion : Item
 ```csharp
 public class Inventory
 {
-    private List<Item> _items = new List<Item>();
+    private List<ICollectable> _items = new List<ICollectable>();
 
-    public IReadOnlyList<Item> Items => _items.AsReadOnly();
+    public IReadOnlyList<ICollectable> Items => _items.AsReadOnly();
 
     public int Count => _items.Count;
 
@@ -558,15 +646,15 @@ public class Inventory
 - **FindBestArmour**(): Returns the best 'Armour'.
 
 ```csharp
-    public bool HasItem(Item item) => Contents.Contains(item);
+    public bool HasItem(ICollectable item) => Contents.Contains(item);
 
-    public void AddItem(Item item)
+    public void AddItem(ICollectable item)
     {
         if (item == null) throw new ArgumentNullException(nameof(item));
         _items.Add(item);
     }
 
-    public void RemoveItem(Item item) => _items.Remove(item);
+    public void RemoveItem(ICollectable item) => _items.Remove(item);
 
     public void Clear() => _items.Clear();
 
@@ -599,25 +687,89 @@ public class Inventory
 
 ### GameMap <a id="gamemap"></a>
 #### Attributes
-- **_rooms** :: List<Room> : Private readonly list of all rooms in the game.
-- 
+- **_rooms** :: List<Room>: Private list of all rooms in the game.
 - **Rooms** :: IReadOnlyList<Room>: A readlonly list of all rooms in the game.
 - **CurrentRoom** :: Room: The current room in focus.
 
+```csharp
+public class GameMap
+{
+    private List<Room> _rooms = new List<Room>();
+    public IReadOnlyList<Room> Rooms => _rooms.AsReadOnly();
+    public Room CurrentRoom {get; private set;}
+
+    public GameMap(Room startingRoom)
+    {
+        CurrentRoom = startingRoom
+        AddRoom(startingRoom);
+    }
+
+```
+
 #### Methods
-- **MovePlayer**(Room neighbour): Moves the player a specified direction through the map.
-- **GetNeigbours**(): Returns the neighbours to the current room, used to move between.
+- **AddRoom**(Room room): Adds a room to the private _rooms;
+- **MovePlayer**(Direction direction): Moves the player a specified direction through the map.
 
-## Interfaces <a id="interfaces"></a>
-### IDamagable
-Applied to 'Player' and 'Monster'.
-- TakeDamage(int amount)
+```
+    public void AddRoom(Room room)
+    {
+        if (room == null) throw new ArgumentNullException(nameof(room));
+        _rooms.Add(room)
+    }
 
-### ICollectible
-Applied to 'Item'.
-- Use(Creature target)
+    public bool MovePlayer(Direction direction)
+    {
+        var neighbour = CurrentRoom.GetNeighbour(direction);
+        if (neighbour != null)
+        {
+            CurrentRoom = neighbour;
+            if (!_rooms.Contains(CurrentRoom))
+            {
+                _rooms.Add(CurrentRoom);
+            }
+            return true;
+        }
+        return false;
+    }
 
+```
 
 ## Testing 
+
+### Unit Tests
+#### Creature
+- Test TakeDamage() with various defense values
+- Test Heal() doesn't exceed MaxHealth
+- Test stat recalculation when equipping items
+
+#### Player
+- Test experience gain and level up
+- Verify stat increases on level up
+
+#### Monster
+- Test attack behviours for each monister type
+- Test drop generation probabilities
+
+#### Item
+- Test weapon damamge modification
+- Test armour defense modification
+- Test all potion effects
+
+#### Inventory
+- Test item add/removal
+- Test best weapon/armour selection
+- Test LINQ queries
+
+#### GameMap 
+- Test room connections
+- Test movement between rooms
+- Test room content management
+
+### Intergration Tests
+1. Test full combat sequence
+2. Test inventory management during gameplay
+3. Test map navigation and discovery
+
+## Video
 
 *Jake Morgan* *29160569*
