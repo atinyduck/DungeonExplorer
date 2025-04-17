@@ -3,11 +3,12 @@
 ## Table of Contents
 - [Brief](#brief)
 - [Objects](#objects)
+    - [Enums](#enum)
+    - [Interfaces](#interface)
     - [Creature](#creature)
     - [Item](#item)
     - [Inventory](#inventory)
     - [GameMap](#gamemap)
-    - [Interfaces](#interfaces)
 - [Testing](#testing)
 
 ## Brief <a id="brief"></a>
@@ -58,7 +59,7 @@ Read the Coding Task Guidelines and perform the following:
 
 ## Objects <a id="objects"></a>
 
-### Enums
+### Enums <a id="enum"></a>
 #### BaseSatistic
 - Contains all base stats
   
@@ -97,7 +98,7 @@ public enum Direction
     West
 }
 ```
-### Interfaces <a id="interfaces"></a>
+### Interfaces <a id="interface"></a>
 #### IDamagable
 Applied to 'Player' and 'Monster'.
 - TakeDamage(int amount)
