@@ -104,7 +104,7 @@ Applied to 'Player' and 'Monster'.
 - TakeDamage(int amount)
 
 ```csharp
-public Interface IDamageable
+public interface IDamageable
 {
     void TakeDamage(int amount)
     int Health { get; }
