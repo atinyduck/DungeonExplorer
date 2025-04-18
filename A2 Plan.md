@@ -64,7 +64,7 @@ Read the Coding Task Guidelines and perform the following:
 - Contains all base stats
   
 ```csharp
-public Enum BaseStatistic
+public enum BaseStatistic
 {
     Defense,
     AttackPower,
@@ -76,7 +76,7 @@ public Enum BaseStatistic
 - Contains all potion types.
   
 ```csharp
-public Enum PotionEffect
+public enum PotionEffect
 {
     Heal,
     Poison,
