@@ -20,7 +20,7 @@ namespace DungeonExplorer
         internal Game()
         {
             // Initialize the game with one room and one player
-            this.player = new Player("NAME", 100);
+            this.player = new Player("NAME");
             this.CurrentRoom = new Room();
             this.VisitedRooms = new List<Room>();
         }

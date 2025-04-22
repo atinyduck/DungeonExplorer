@@ -43,8 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Direction.cs" />
+    <Compile Include="Monster.cs" />
+    <Compile Include="MonsterTypes.cs" />
+    <Compile Include="PotionEffect.cs" />
+    <Compile Include="BaseStatistic.cs" />
+    <Compile Include="Creature.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameUI.cs" />
+    <Compile Include="ICollectable.cs" />
+    <Compile Include="IDamageable.cs" />
+    <Compile Include="Inventory.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

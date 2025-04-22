@@ -4,24 +4,42 @@ using System.Reflection;
 
 namespace DungeonExplorer
 {
-    internal class Player
+    internal class Player : Creature
     {
-        internal string Name { get; set; }
-        internal int Health { get; private set; }
-        internal int MaxHealth;
-        private readonly List<string> inventory = new List<string>();
+        public int Experience { get; private set; }
+        public int Level { get; private set; } = 1;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Player"/> class.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="health">The health.</param>
-        internal Player(string name, int health) 
+        public Player(string name) : base(name, maxHealth: 100, Defence: 10, attackPower: 15)
         {
-            Name = name;
-            Health = health;
-            MaxHealth = health;
+            Inventory = new Inventory();
         }
+
+        public void GainExperience(int amount)
+        {
+            Experience += amount;
+            //Display increase
+
+            while (Experience >= GetRequiredXP())
+            {
+                LevelUp();
+            }
+        }
+
+        private void LevelUp()
+        {
+            // Increase Stats
+            Level++;
+            ModfiyBaseStat(BaseStatistics.MaxHealth, MaxHealth + 10);
+            ModfiyBaseStat(BaseStatistics.AttackPower, BaseAttackPower + 2);
+            ModfiyBaseStat(BaseStatistics.Defence, BaseDefence + 1);
+            Heal(MaxHealth);
+
+            //Display level up
+        }
+
+        private int GetRequiredXP() => Level * 100;
+
+        internal List<string> GetInventory() => Inventory;
 
         /// <summary>
         /// Converts to string.
@@ -35,52 +53,16 @@ namespace DungeonExplorer
                 "\r\n                  PLAYER STATS                  \r\n" +
                 "=================================================";
 
-            string Stats = $"\r\nName: {this.Name} \r\nHP: {this.Health} \r\n\r\nInventory:\r\n{this.GetInventoryContents()}\r\n";
+            string stats = $"\r\nName: {Name} \r\nHP: {Health} \r\n\r\nInventory:\r\n{GetInventory()}\r\n";
 
-            return Title + Stats;
+            return Title + stats;
         }
 
-        internal List<string> GetInventory() => inventory;
-
-        /// <summary>
-        /// Picks up item.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        internal void PickUpItem(string item)
+        public override void Attack(IDamagable target)
         {
-            inventory.Add(item);
-        }
-
-        /// <summary>
-        /// Heals the specified amount up to Max Health.
-        /// </summary>
-        /// <param name="amount">The amount.</param>
-        internal void Heal(int amount)
-        { 
-            this.Health += amount;
-            if (this.Health > this.MaxHealth)
-            {
-                this.Health = this.MaxHealth;
-            }
-        }
-
-        /// <summary>
-        /// Makes the player take damage.
-        /// </summary>
-        /// <param name="amount">The amount.</param>
-        internal void TakeDamage(int amount)
-        {
-            this.Health -= amount;
-            if (this.Health < 0) this.Health = 0;
-        }
-
-        /// <summary>
-        /// Gets the inventory contents.
-        /// </summary>
-        /// <returns>string: The inventory as a string.</returns>
-        private string GetInventoryContents()
-        {
-            return string.Join(", ", inventory);
+            int damage = AttackPower;
+            target.TakeDamage(damage);
+            //Display attack;
         }
     }
 }
