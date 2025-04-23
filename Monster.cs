@@ -19,8 +19,8 @@ namespace DungeonExplorer
         public virtual List<Item> GenerateDrops()
         {
             var drops = new List<Item>();
-
-            if (Random.Next(0, 2) == 0)
+            Random random= new Random();
+            if (random.Next(0, 2) == 0)
             {
                 // Add item here (Health potion)
             }
@@ -32,7 +32,7 @@ namespace DungeonExplorer
             int damage = AttackPower;
             if (EquippedWeapon != null)
             {
-                damage += EquippedWeapon.AttackPower;
+                damage += EquippedWeapon.DamageModifier;
             }
             target.TakeDamage(damage);
         }

@@ -33,9 +33,9 @@ namespace DungeonExplorer
         
         public abstract void Attack(IDamageable target);
 
-        public void TakeDamage(int amount)
+        public void TakeDamage(int damage)
         {
-            int actualDamage = Math.Max(0, amount - Defence);
+            int actualDamage = Math.Max(0, damage - Defence);
             Health = Math.Max(0, Health - actualDamage);
             // Display Damage
     }

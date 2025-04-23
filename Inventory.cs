@@ -19,7 +19,7 @@ namespace DungeonExplorer
 
         public Armour BestArmour => FindBestArmour();
 
-        public bool HasItem(ICollectable item) => Contents.Contains(item);
+        public bool HasItem(ICollectable item) => _items.Contains(item);
 
         public void AddItem(ICollectable item)
         {

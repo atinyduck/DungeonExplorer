@@ -14,7 +14,7 @@ namespace DungeonExplorer
              : base(name, description)
         {
             DamageModifier = damageModifier;
-        }
+        } 
 
         public override string ToString()
         {

@@ -8,15 +8,16 @@ namespace DungeonExplorer
 {
     public class ClockworkMage : Monster
     {
+        const int AttackNum = 2;
         public ClockworkMage()
-             : base("Clockwork Mage", maxHealth: ~, defence: ~, attackPower: ~, rewardXP: ~)
+             : base("Clockwork Mage", maxHealth: 60, defence: 3, attackPower: 6, rewardXP: 25)
         { }
 
         public override void Attack(IDamageable target)
         {
-            for (int i = 0; i < 2; i++)
+            for (int i = AttackNum; i < 2; i++)
             {
-                int damage = AttackPower / 2;
+                int damage = Convert.ToInt16(AttackPower / AttackNum);
                 target.TakeDamage(damage);
                 //Display attack
             }
@@ -25,8 +26,10 @@ namespace DungeonExplorer
 
     public class RustingConstruct : Monster
     {
+        private const int LootChance = 3;
+
         public RustingConstruct()
-             : base("Rusting Construct", maxHealth: ~, defence: ~, attackPower: ~, rewardXP: ~)
+             : base("Rusting Construct", maxHealth: 100, defence: 6, attackPower: 8, rewardXP: 32)
         { }
 
         public override void Attack(IDamageable target)
@@ -39,11 +42,11 @@ namespace DungeonExplorer
         public override List<Item> GenerateDrops()
         {
             var drops = new List<Item>();
-    
-        if (Random.Next(0, 3) == 0)
-            {
-                //Add armour to the drops
-            }
+            Random random = new Random();
+            if (random.Next(0, LootChance) == 0)
+                {
+                    //Add armour to the drops
+                }
 
             return drops;
         }
@@ -51,8 +54,11 @@ namespace DungeonExplorer
 
     public class RepairUnit : Monster
     {
+        private const int RepairChance = 4;
+        private const float RepairPercent = 0.1f;
+
         public RepairUnit()
-             : base("Clockwork Mage", maxHealth: ~, defence: ~, attackPower: ~, rewardXP: ~)
+             : base("Clockwork Mage", maxHealth: 50, defence: 4, attackPower: 4, rewardXP: 22)
         { }
 
         public override void Attack(IDamageable target)
@@ -61,9 +67,12 @@ namespace DungeonExplorer
             target.TakeDamage(damage);
             //Display attack   
 
-            if (Random.Next(0, 4) == 0)
+            
+            Random random = new Random();
+            if (random.Next(0, RepairChance) == 0)
             {
-                Heal(~);
+                int healthIncrease = Convert.ToInt16(MaxHealth * RepairPercent);
+                Heal(healthIncrease);
                 // Display self-heal
             }
         }
