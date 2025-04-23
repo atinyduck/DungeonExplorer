@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DungeonExplorer
 {
-    internal class Program
+    public class Program
     {
         /// <summary>
         /// Run point of the program

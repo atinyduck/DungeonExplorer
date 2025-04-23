@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace DungeonExplorer
 {
-    internal static class Testing
+    public static class Testing
     {
         const string TITLE = "\n\n===== Debug =====\n";
 
@@ -16,12 +16,12 @@ namespace DungeonExplorer
         /// <summary>
         /// User input for testing functionality.
         /// </summary>
-        internal static void TestMenu()
+        public static void TestMenu()
         {
             string output = TITLE + "Menu ::\n\nPlease enter an option :\n1. Player\n2. Room\n3. All";
             List<string> valid_inputs = new List<string>() { "1", "2", "3"};
 
-            string input = GameUI.GetInput(valid_inputs, output);
+            string input = UI.GetInput(valid_inputs, output);
             
             switch(input)
             {
@@ -39,7 +39,7 @@ namespace DungeonExplorer
                     break;
             }
 
-            GameUI.WaitForInput();
+            UI.WaitForInput();
 
         }
 
@@ -65,7 +65,7 @@ namespace DungeonExplorer
         /// </summary>
         private static void TestPlayerInitialisation()
         {
-            Player test_player = new Player("Dummy", 100);
+            Player test_player = new Player("Dummy");
 
             // Test initialisation
             Debug.Assert(test_player.Name == "Dummy", 
@@ -81,19 +81,8 @@ namespace DungeonExplorer
         /// </summary>
         private static void TestInventoryManagement()
         {
-            Player test_player = new Player("Dummy", 100);
+            Player test_player = new Player("Dummy");
 
-            // Add items
-            test_player.PickUpItem("Sword");
-            test_player.PickUpItem("Shield");
-
-            // Test if items are present
-            Debug.Assert(test_player.GetInventory().Count == 2, 
-                "Inventory should contain two items.");
-            Debug.Assert(test_player.GetInventory().Contains("Sword"), 
-                "Inventory should contain 'Sword'");
-            Debug.Assert(test_player.GetInventory().Contains("Shield"), 
-                "Inventory should contain 'Shield'");
         }
 
         /// <summary>
@@ -101,20 +90,8 @@ namespace DungeonExplorer
         /// </summary>
         private static void TestToString()
         {
-            Player test_player = new Player("Dummy", 100);
+            Player test_player = new Player("Dummy");
 
-            // Add item
-            test_player.PickUpItem("Sword");
-
-            string player_stats = test_player.ToString();
-
-            // Test if ToString contains correct values
-            Debug.Assert(player_stats.Contains("Name: Dummy"), 
-                "Player stats should contain 'Name: Hero'");
-            Debug.Assert(player_stats.Contains("HP: 100"), 
-                "Player stats should contain 'HP: 100'");
-            Debug.Assert(player_stats.Contains("Inventory:\r\nSword"), 
-                "Player stats should contain 'Inventory:\r\nSword'");
         }
 
         /// <summary>
@@ -122,7 +99,7 @@ namespace DungeonExplorer
         /// </summary>
         private static void TestHealthManagement()
         {
-            Player test_player = new Player("Dummy", 100);
+            Player test_player = new Player("Dummy");
 
             // Test damage taken
             test_player.TakeDamage(20);

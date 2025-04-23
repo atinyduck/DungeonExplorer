@@ -79,8 +79,8 @@ namespace DungeonExplorer
 
         public void RecalculateStats()
         {
-            AttackPower = BaseAttackPower + EquippedWeapon?.DamageModifier;
-            Defence = BaseDefence + EquippedArmour?.DefenceModifier;
+            AttackPower = BaseAttackPower + (EquippedWeapon?.DamageModifier ?? 0);
+            Defence = BaseDefence + (EquippedArmour?.DefenceModifier ?? 0);
         }
 
         public override string ToString()

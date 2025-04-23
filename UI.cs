@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace DungeonExplorer
 {
-    internal static class GameUI
+    public static class UI
     {
         #region String Constants
 
-        internal const string TITLE = @"
+        public const string TITLE = @"
 =================================================
                   RUST & RUIN                  
 =================================================
@@ -79,7 +79,7 @@ Choose an option [1 - 3]";
         /// Displays the message.
         /// </summary>
         /// <param name="message">The message.</param>
-        internal static void DisplayMessage(string message, bool clear = false, bool wait = true)
+        public static void DisplayMessage(string message, bool clear = false, bool wait = true)
         {
             if (clear) Console.Clear();
 
@@ -92,11 +92,10 @@ Choose an option [1 - 3]";
         /// Displays the intro.
         /// </summary>
         /// <param name="player">The player.</param>
-        internal static void DisplayIntro(Player player)
+        public static void DisplayIntro(Player player)
         {
             // Get a new name input from the user
-            player.Name = GetInput(new List<string>(), (TITLE + INTRO), false);
-
+            
             string intro_txt = TITLE + $"Welcome {player.Name} to the Iron Maw!\n\r" + WELCOME;
 
             DisplayMessage(intro_txt, true);
@@ -105,7 +104,7 @@ Choose an option [1 - 3]";
         /// <summary>
         /// Displays the menu.
         /// </summary>
-        internal static void DisplayMenu()
+        public static void DisplayMenu()
         {
             bool playing = true;
             while (playing)
@@ -157,7 +156,7 @@ Choose an option [1 - 3]";
         /// </summary>
         /// <param name="player">The current player.</param>
         /// <param name="room">The current room</param>
-        internal static void DisplayRoom(Room room, Player player)
+        public static void DisplayRoom(Room room, Player player)
         {
             bool in_room = true;
             while (in_room)
@@ -193,7 +192,7 @@ Choose an option [1 - 3]";
                         break;
 
                     case "4": // Check the player's stats
-                        GameUI.DisplayMessage(player.ToString());
+                        UI.DisplayMessage(player.ToString());
                         break;
 
                     case "Q": // Quit game
@@ -216,7 +215,7 @@ Choose an option [1 - 3]";
         /// <summary>
         /// Displays how to play the game.
         /// </summary>
-        internal static void DisplayHowTo()
+        public static void DisplayHowTo()
         {
             DisplayMessage(TITLE + "Waiting on implementation", true);
         }
@@ -231,7 +230,7 @@ Choose an option [1 - 3]";
         /// <param name="valid_inputs">The valid inputs.</param>
         /// <param name="output">The output.</param>
         /// <returns>string: The user's input.</returns>
-        internal static string GetInput(List<string> valid_inputs, string output, bool enforce_validation = true)
+        public static string GetInput(List<string> valid_inputs, string output, bool enforce_validation = true)
         {
             string input = null;
 
@@ -262,7 +261,7 @@ Choose an option [1 - 3]";
         /// Confirm if the user wants to quit.
         /// </summary>
         /// <returns>bool: If the input is 'Y'</returns>
-        internal static bool ConfirmQuit()
+        public static bool ConfirmQuit()
         {
             string quit_txt = "Are you sure you want to quit? [ Y/N ]\nUnsaved progress will be deleted.";
 
@@ -275,7 +274,7 @@ Choose an option [1 - 3]";
         /// <summary>
         /// Waits for input from the user.
         /// </summary>
-        internal static void WaitForInput()
+        public static void WaitForInput()
         {
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();

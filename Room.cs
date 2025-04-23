@@ -9,7 +9,7 @@ using System.Runtime.Remoting.Lifetime;
 
 namespace DungeonExplorer
 {
-    internal class Room
+    public class Room
     {
         /// <summary>
         /// The Room object holds all functionality for each room in this game.
@@ -18,7 +18,7 @@ namespace DungeonExplorer
         // Constants
         private const int LootChance = 4;
         private const int DeadEndChance = 12;
-        internal const int MaxNeighbours = 3;
+        public const int MaxNeighbours = 3;
         private const int MaxRecursionDepth = 5;
         private const string DescriptionSrc = "room_descriptions.txt";
 
@@ -36,7 +36,7 @@ namespace DungeonExplorer
         /// <summary>
         /// Initializes a new instance of the <see cref="Room"/> class.
         /// </summary>
-        internal Room(int depth = 0, Random random = null, List<string> available_descriptions = null)
+        public Room(int depth = 0, Random random = null, List<string> available_descriptions = null)
         {
 
             this.rnd = random ?? new Random();
@@ -115,24 +115,24 @@ namespace DungeonExplorer
         /// Gets the list of neighbours
         /// </summary>
         /// <returns> List: The neighbours </returns>
-        internal Dictionary<Room, string> GetNeighbours() => this.Neighbours;
+        public Dictionary<Room, string> GetNeighbours() => this.Neighbours;
 
         /// <summary>
         /// Gets the loot.
         /// </summary>
         /// <returns> List: The list of loot. </returns>
-        internal List<string> GetLoot() => this.Loot;
+        public List<string> GetLoot() => this.Loot;
 
         /// <summary>
         /// Gets the description.
         /// </summary>
         /// <returns> string: The description. </returns>
-        internal string GetDescription() => this.Description;
+        public string GetDescription() => this.Description;
 
         /// <summary>
         /// Removes a specified item from loot.
         /// </summary>
-        internal void RemoveLoot(string item)
+        public void RemoveLoot(string item)
         {
             // If loot contains the specified item
             if (this.Loot.Contains(item))
@@ -143,7 +143,7 @@ namespace DungeonExplorer
             else
             {
                 // If not then display appropriate message
-                GameUI.DisplayMessage("You do not have this item.");
+                UI.DisplayMessage("You do not have this item.");
             }
 
         }
@@ -186,7 +186,7 @@ namespace DungeonExplorer
             catch (Exception ex)
             {
                 // Log error for feeback
-                GameUI.DisplayMessage($"Failed to read descriptions: {ex}");
+                UI.DisplayMessage($"Failed to read descriptions: {ex}");
                 return catch_list;
             }
         }
@@ -221,7 +221,7 @@ namespace DungeonExplorer
         /// <summary>
         /// Generates the neighbour.
         /// </summary>
-        internal void GenerateNeighbour(int depth = 0)
+        public void GenerateNeighbour(int depth = 0)
         {
             if (this.rnd.Next(DeadEndChance) != 1)
             {
@@ -255,7 +255,7 @@ namespace DungeonExplorer
                 catch (Exception ex)
                 {
                     string message = $"Exception in GenerateNeighbour: {ex}";
-                    GameUI.DisplayMessage(message, wait: false);
+                    UI.DisplayMessage(message, wait: false);
                     throw; // Re-throw for debugging
                 }
             }
@@ -272,7 +272,7 @@ namespace DungeonExplorer
             return directions[rnd.Next(directions.Length)];
         }
 
-        internal Room MoveToNeighbour(string direction)
+        public Room MoveToNeighbour(string direction)
         {
             foreach (var neighbour in this.Neighbours)
             {
@@ -283,7 +283,7 @@ namespace DungeonExplorer
                 }
             }
 
-            GameUI.DisplayMessage("You cannot go that way.");
+            UI.DisplayMessage("You cannot go that way.");
             return this; // Stay in the current room
         }
 
@@ -314,7 +314,7 @@ namespace DungeonExplorer
             List<string> loot_inputs = Enumerable.Range(1, loot_count + 1)
                 .Select(x => x.ToString())
                 .ToList();
-            string input = GameUI.GetInput(loot_inputs, loot_prompt.ToString());
+            string input = UI.GetInput(loot_inputs, loot_prompt.ToString());
 
             // The index of the loot
             return int.Parse(input) - 1;
@@ -324,7 +324,7 @@ namespace DungeonExplorer
         /// Loots the room.
         /// </summary>
         /// <param name="current_player">The current player.</param>
-        internal void LootRoom(Player current_player)
+        public void LootRoom(Player current_player)
         {
             List<string> current_loot = this.GetLoot();
             int loot_count = this.GetLoot().Count;
@@ -338,28 +338,25 @@ namespace DungeonExplorer
                 if (loot_index < loot_count)
                 {
                     // Add the item to the player's inventory
-                    string chosen_item = current_loot[loot_index];
-                    current_player.PickUpItem(chosen_item);
 
                     // Remove the item from the room
-                    this.RemoveLoot(chosen_item);
                 }
                 else
                 {
-                    GameUI.DisplayMessage("You chose to leave the items.");
+                    UI.DisplayMessage("You chose to leave the items.");
                 }
             }
             else
             {
                 // If not output saying so
-                GameUI.DisplayMessage("You could not find any useful items.");
+                UI.DisplayMessage("You could not find any useful items.");
             }
         }
 
         /// <summary>
         /// Move onto the next room.
         /// </summary>
-        internal void AdventureOn(Player current_player)
+        public void AdventureOn(Player current_player)
         {
             StringBuilder directions_menu = new StringBuilder("Choose a direction:\n");
             foreach(var neighbour in GetNeighbours())
@@ -367,10 +364,10 @@ namespace DungeonExplorer
                 directions_menu.Append($"\n :: {neighbour.Value}");
             }
 
-            string direction = GameUI.GetInput(GetNeighbours().Values.ToList(), directions_menu.ToString());
+            string direction = UI.GetInput(GetNeighbours().Values.ToList(), directions_menu.ToString());
 
             Room next_room = this.MoveToNeighbour(direction);
-            GameUI.DisplayRoom(next_room, current_player);
+            UI.DisplayRoom(next_room, current_player);
         }
     }
 }

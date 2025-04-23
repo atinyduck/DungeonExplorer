@@ -8,7 +8,7 @@ using System.Runtime.Remoting;
 
 namespace DungeonExplorer
 {
-    internal class Game
+    public class Game
     {
         private readonly Player player;
         private readonly Room CurrentRoom;
@@ -17,7 +17,7 @@ namespace DungeonExplorer
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class.
         /// </summary>
-        internal Game()
+        public Game()
         {
             // Initialize the game with one room and one player
             this.player = new Player("NAME");
@@ -28,14 +28,14 @@ namespace DungeonExplorer
         /// <summary>
         /// Starts this instance of 'Game'.
         /// </summary>
-        internal void Start()
+        public void Start()
         {
-            GameUI.DisplayMenu();
+            UI.DisplayMenu();
 
             // If no save is present generate a new one.
             if (!CallSave("REPLACE ME PLEASEEEE!!!!!!!!"))
             {
-                GameUI.DisplayIntro(this.player);
+                UI.DisplayIntro(this.player);
             }
 
             // If there is CallSave() will get relevant information
@@ -55,8 +55,7 @@ namespace DungeonExplorer
             while (running)
             {
                 VisitedRooms.Add(CurrentRoom);
-
-                GameUI.DisplayRoom(current_room, player);
+                // Display loop
             }
         }
 
@@ -68,17 +67,17 @@ namespace DungeonExplorer
 
         #region Save Control
 
-        internal void SaveGame(string path)
+        public void SaveGame(string path)
         {
             // Waiting for implementation
         }
 
-        internal void DeleteSave(string path)
+        public void DeleteSave(string path)
         {
             // Waiting for implementation
         }
 
-        internal bool CallSave(string path)
+        public bool CallSave(string path)
         {
             return false; // Waiting for implementation
         }

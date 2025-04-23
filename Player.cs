@@ -4,15 +4,13 @@ using System.Reflection;
 
 namespace DungeonExplorer
 {
-    internal class Player : Creature
+    public class Player : Creature
     {
         public int Experience { get; private set; }
         public int Level { get; private set; } = 1;
 
-        public Player(string name) : base(name, maxHealth: 100, Defence: 10, attackPower: 15)
-        {
-            Inventory = new Inventory();
-        }
+        public Player(string name) : base(name, maxHealth: 100, defence: 10, attackPower: 15)
+        { }
 
         public void GainExperience(int amount)
         {
@@ -29,9 +27,9 @@ namespace DungeonExplorer
         {
             // Increase Stats
             Level++;
-            ModfiyBaseStat(BaseStatistics.MaxHealth, MaxHealth + 10);
-            ModfiyBaseStat(BaseStatistics.AttackPower, BaseAttackPower + 2);
-            ModfiyBaseStat(BaseStatistics.Defence, BaseDefence + 1);
+            ModifyBaseStat(BaseStatistic.MaxHealth, MaxHealth + 10);
+            ModifyBaseStat(BaseStatistic.AttackPower, BaseAttackPower + 2);
+            ModifyBaseStat(BaseStatistic.Defence, BaseDefence + 1);
             Heal(MaxHealth);
 
             //Display level up
@@ -39,7 +37,7 @@ namespace DungeonExplorer
 
         private int GetRequiredXP() => Level * 100;
 
-        internal List<string> GetInventory() => Inventory;
+        public Inventory GetInventory() => Inventory;
 
         /// <summary>
         /// Converts to string.
@@ -58,7 +56,7 @@ namespace DungeonExplorer
             return Title + stats;
         }
 
-        public override void Attack(IDamagable target)
+        public override void Attack(IDamageable target)
         {
             int damage = AttackPower;
             target.TakeDamage(damage);
