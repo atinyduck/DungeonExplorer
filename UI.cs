@@ -150,7 +150,6 @@ Choose an option [1 - 3]";
             }
         }
 
-
         /// <summary>
         /// Displays the room.
         /// </summary>

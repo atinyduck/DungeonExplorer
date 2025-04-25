@@ -8,7 +8,7 @@ namespace DungeonExplorer
 {
     public class GameMap
     {
-        private List<Room>_rooms = new List<Room>();
+        private List<Room> _rooms = new List<Room>();
         public IReadOnlyList<Room> Rooms => _rooms.AsReadOnly();
         public Room CurrentRoom { get; private set; }
 

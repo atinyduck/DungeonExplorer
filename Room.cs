@@ -14,131 +14,89 @@ namespace DungeonExplorer
         /// <summary>
         /// The Room object holds all functionality for each room in this game.
         /// </summary>
-        
-        // Constants
+
         private const int LootChance = 4;
-        private const int DeadEndChance = 12;
-        public const int MaxNeighbours = 3;
-        private const int MaxRecursionDepth = 5;
-        private const string DescriptionSrc = "room_descriptions.txt";
-
-        // Descriptions
-        private readonly List<string> Descriptions = LoadDescriptions();
-        private readonly string Description;
-
-        private readonly List<string> Loot;
-
-        // Neighbours and their direction
-        private readonly Dictionary<Room, string> Neighbours = new Dictionary<Room, string>();
-
-        private readonly Random rnd;
+        private List<Item> _loot { get; set; }
+        public string Description { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Room"/> class.
         /// </summary>
-        public Room(int depth = 0, Random random = null, List<string> available_descriptions = null)
+        public Room(List<string> availableDescriptions = null)
         {
-
-            this.rnd = random ?? new Random();
-            this.Descriptions = available_descriptions ?? LoadDescriptions();
+            _descriptions = availableDescriptions ?? LoadDescriptions();
 
             // Generate new description
-            if (Descriptions.Count != 0)
+            if (_descriptions.Count != 0)
             {
-                this.Description = GenerateDescription();
+                Description = GenerateDescription();
                 // Remove used description from the list
-                Descriptions.Remove(this.Description);
+                _descriptions.Remove(Description);
             }
-
-            // If the room has loot generate it
-            if (rnd.Next(LootChance) != 0)
-            {
-                this.Loot = GenerateLoot();
-            }
-            // If not set it as null
             else
             {
-                this.Loot = new List<string>();
+                Description = "A nondescript room.";
             }
 
-            if (this.rnd.Next(DeadEndChance) != 1)
-            {
-                // Generate a random amount of neighbours
-                for (int neighbourCount = this.rnd.Next(1, MaxNeighbours + 1); neighbourCount > 0; neighbourCount--)
-                {
-                    this.GenerateNeighbour(depth + 1);
-                }
-            }
-            
+            GenerateLoot();
         }
 
-        /// <summary>
-        /// Returns the description and contents of the room
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        #region Description
+        private static List<string> _descriptions { get; set; }
+
+        private static List<string> LoadDescriptions(string source = "room_descriptions.txt")
         {
-            StringBuilder room_string = new StringBuilder();
+            List<string> defualtDescriptions = new List<string> {
+                "A dimly lit chamber.",
+                "A cold, stone-walled room.",
+                "A dusty corridor.",
+                "A spacious hall with echoing sounds."
+            };
 
-            // Display the description
-            room_string.AppendLine($"What you see...\n\n    {GetDescription()}");
-
-            // Display the loot 
-            if (GetLoot().Any())
+            try
             {
-                room_string.AppendLine("\nYou can see things worth picking up!");
-                foreach (var item in GetLoot())
+                if (!File.Exists(source))
                 {
-                    room_string.AppendLine($" :: {item}");
+                    return defualtDescriptions;
                 }
-            }
-            else
-            {
-                room_string.AppendLine("\nThere is nothing of worth in this room.");
-            }
 
-            // Display the neighbours
-            if (GetNeighbours().Any())
-            {
-                room_string.AppendLine($"\nYou can see {GetNeighbours().Count} door(s) leading from this room.");
+                var descriptions = File.ReadAllLines(source)
+                    .Where(line => !string.IsNullOrWhiteSpace(line))
+                    .ToList();
+                return descriptions.Any() ? descriptions : defualtDescriptions;
             }
-            else
+            catch (Exception e)
             {
-                room_string.AppendLine("\nThere are no doors leading out, go back.");
+                string errorMessage = $"Error loading room: {e.Message}";
+                UI.DisplayMessage(errorMessage, wait: true);
+                return defualtDescriptions;
             }
-
-            // Return the display 
-            return room_string.ToString();
         }
 
-        /// <summary>
-        /// Gets the list of neighbours
-        /// </summary>
-        /// <returns> List: The neighbours </returns>
-        public Dictionary<Room, string> GetNeighbours() => this.Neighbours;
+        private string GenerateDescription()
+        {
+            Random random = new Random();
 
-        /// <summary>
-        /// Gets the loot.
-        /// </summary>
-        /// <returns> List: The list of loot. </returns>
-        public List<string> GetLoot() => this.Loot;
+            if (Description == null || Description.Count() == 0)
+            {
+                return "An eerily empty room.";
+            }
+            return _descriptions[random.Next(_descriptions.Count)];
+        }
 
-        /// <summary>
-        /// Gets the description.
-        /// </summary>
-        /// <returns> string: The description. </returns>
-        public string GetDescription() => this.Description;
+        #endregion
+        #region Loot
 
         /// <summary>
         /// Removes a specified item from loot.
         /// </summary>
-        public void RemoveLoot(string item)
+        public void RemoveLoot(Item item)
         {
             // If loot contains the specified item
-            if (this.Loot.Contains(item))
+            if (_loot.Contains(item))
             {
                 // Then remove it
-                this.Loot.Remove(item);
+                _loot.Remove(item);
             }
             else
             {
@@ -149,172 +107,32 @@ namespace DungeonExplorer
         }
 
         /// <summary>
-        /// Loads the descriptions.
-        /// </summary>
-        /// <returns> List: The descriptions. </returns>
-        private static List<string> LoadDescriptions()
-        {
-            List<string> catch_list = new List<string> {
-                        "A dark and eerie room.",
-                        "A room filled with ancient artifacts.",
-                        "A room with a mysterious aura."
-                        };
-
-            try
-            {
-                if (!File.Exists(DescriptionSrc))
-                {
-                    return catch_list;
-                }
-
-                // Read file contents and choose random description
-                using (var reader = new StreamReader(DescriptionSrc))
-                {
-                    var descriptions = reader.ReadToEnd().Split('\n').ToList();
-
-                    // Ensure there's atleast one description
-                    if (descriptions.Any())
-                    {
-                        return descriptions;
-                    }
-                    else
-                    {
-                        return catch_list;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log error for feeback
-                UI.DisplayMessage($"Failed to read descriptions: {ex}");
-                return catch_list;
-            }
-        }
-
-        /// <summary>
-        /// Generates a random description
-        /// </summary>
-        /// <returns> String: The new description</returns>
-        private string GenerateDescription()
-        {
-            if (Descriptions.Count == 0)
-            {
-                return "A mysterious room with no description, you may have gone blind?";
-            }
-            return Descriptions[this.rnd.Next(Descriptions.Count)];
-        }
-
-        /// <summary>
-        /// Generates the loot.
-        /// </summary>
-        /// <returns> List: The new list of loot</returns>
-        private static List<string> GenerateLoot()
-        {
-            // Temporary functionality for Assessment 1
-            List<string> new_loot = new List<string>();
-
-            new_loot.Add("Rusted Pipe");
-
-            return new_loot;
-        }
-
-        /// <summary>
-        /// Generates the neighbour.
-        /// </summary>
-        public void GenerateNeighbour(int depth = 0)
-        {
-            if (this.rnd.Next(DeadEndChance) != 1)
-            {
-                try
-                {
-                    // If the max amount of neighbours is present do not make more
-                    if (GetNeighbours().Count >= MaxNeighbours)
-                    {
-                        return;
-                    }
-
-                    // Check if max recursion depth has been reached
-                    if (depth > MaxRecursionDepth)
-                    {
-                        return;
-                    }
-
-                    // Make a new room
-                    Room new_neighbour = new Room(depth, this.rnd, new List<string>(this.Descriptions));
-
-                    string direction = GetRandomDirection();
-
-                    // Ensure direction is unique
-                    while (GetNeighbours().ContainsValue(direction))
-                    {
-                        direction = GetRandomDirection();
-                    }
-
-                    this.Neighbours.Add(new_neighbour, direction);
-                }
-                catch (Exception ex)
-                {
-                    string message = $"Exception in GenerateNeighbour: {ex}";
-                    UI.DisplayMessage(message, wait: false);
-                    throw; // Re-throw for debugging
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets a random direction (N, E, W)
-        /// South represents the previous room
-        /// </summary>
-        /// <returns>string: The direction</returns>
-        private string GetRandomDirection()
-        {
-            string[] directions = { "North", "East", "West" };
-            return directions[rnd.Next(directions.Length)];
-        }
-
-        public Room MoveToNeighbour(string direction)
-        {
-            foreach (var neighbour in this.Neighbours)
-            {
-                // Find a new room equal to the players entered direction
-                if (neighbour.Value.Equals(direction, StringComparison.OrdinalIgnoreCase))
-                {
-                    return neighbour.Key;
-                }
-            }
-
-            UI.DisplayMessage("You cannot go that way.");
-            return this; // Stay in the current room
-        }
-
-        /// <summary>
         /// Gets the index of the loot.
         /// </summary>
         /// <param name="loot_count">The loot count.</param>
         /// <param name="current_loot">The current loot.</param>
         /// <returns></returns>
-        private int GetLootIndex(int loot_count, List<string> current_loot)
+        private int GetLootIndex()
         {
-            StringBuilder loot_prompt = new StringBuilder("\nThe room contains:\n");
+            int lootCount = _loot.Count();
+            StringBuilder output = new StringBuilder("\nThe room contains:\n");
 
             // Display the loot as a numbered list
-            for (int i = 0; i < loot_count; i++)
+            for (int i = 0; i < lootCount; i++)
             {
-                loot_prompt.Append($"\n{i + 1}. {current_loot[i]}");
+                output.Append($"\n{i + 1}. {_loot[i]}");
             }
 
-            loot_prompt.Append($"\n{loot_count + 1}. None");
+            output.Append($"\n{lootCount + 1}. None");
 
             // Get the users number choice corresponding to the item they want
-            string loot_txt = "\nEnter the item you'd like to loot.";
-
-            loot_prompt.Append(loot_txt);
+            output.Append("\nEnter the item you'd like to loot.");
 
             // Get the loot input
-            List<string> loot_inputs = Enumerable.Range(1, loot_count + 1)
+            List<string> inputRange = Enumerable.Range(1, lootCount + 1)
                 .Select(x => x.ToString())
                 .ToList();
-            string input = UI.GetInput(loot_inputs, loot_prompt.ToString());
+            string input = UI.GetInput(inputRange, output.ToString());
 
             // The index of the loot
             return int.Parse(input) - 1;
@@ -326,48 +144,59 @@ namespace DungeonExplorer
         /// <param name="current_player">The current player.</param>
         public void LootRoom(Player current_player)
         {
-            List<string> current_loot = this.GetLoot();
-            int loot_count = this.GetLoot().Count;
-
-            // If there is loot in the room
-            if (current_loot.Any())
+            if (!_loot.Any())
             {
-                int loot_index = GetLootIndex(loot_count, current_loot);
+                UI.DisplayMessage("You could not find any useful items.");
+                return;
+            }
 
-                // If the choice is not None
-                if (loot_index < loot_count)
-                {
-                    // Add the item to the player's inventory
+            StringBuilder output = new StringBuilder("You search the room and find:\n");
+            for (int i = 0; i < _loot.Count; i++)
+            {
+                Item item = _loot[i];
+                output.AppendLine($"\t{i + 1}. {item.Name} : {item.Description}");
+            }
+            output.AppendLine($"\t{_loot.Count + 1}. Take nothing.");
+            output.AppendLine("Choose an item to take: ");
 
-                    // Remove the item from the room
-                }
-                else
+            List<string> inputRange = Enumerable.Range(0, _loot.Count())
+                .Select(x => x.ToString())
+                .ToList();
+            UI.GetInput();
+        }
+
+        #endregion
+        #region Overrides 
+
+        /// <summary>
+        /// Returns the description and contents of the room
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            StringBuilder room_string = new StringBuilder();
+
+            // Display the description
+            room_string.AppendLine($"What you see...\n\n    {Description}");
+
+            // Display the loot 
+            if (_loot.Any())
+            {
+                room_string.AppendLine("\nYou can see things worth picking up!");
+                foreach (var item in _loot)
                 {
-                    UI.DisplayMessage("You chose to leave the items.");
+                    room_string.AppendLine($" :: {item}");
                 }
             }
             else
             {
-                // If not output saying so
-                UI.DisplayMessage("You could not find any useful items.");
-            }
-        }
-
-        /// <summary>
-        /// Move onto the next room.
-        /// </summary>
-        public void AdventureOn(Player current_player)
-        {
-            StringBuilder directions_menu = new StringBuilder("Choose a direction:\n");
-            foreach(var neighbour in GetNeighbours())
-            {
-                directions_menu.Append($"\n :: {neighbour.Value}");
+                room_string.AppendLine("\nThere is nothing of worth in this room.");
             }
 
-            string direction = UI.GetInput(GetNeighbours().Values.ToList(), directions_menu.ToString());
-
-            Room next_room = this.MoveToNeighbour(direction);
-            UI.DisplayRoom(next_room, current_player);
+            // Return the display 
+            return room_string.ToString();
         }
+
+        #endregion
     }
 }
