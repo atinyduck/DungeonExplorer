@@ -17,6 +17,7 @@ namespace DungeonExplorer
 
         private const int LootChance = 4;
         private List<Item> _loot { get; set; }
+        private Dictionary<Direction, Room> _neighbours { get; set; }
         public string Description { get; private set; }
 
         /// <summary>
@@ -39,6 +40,12 @@ namespace DungeonExplorer
             }
 
             GenerateLoot();
+        }
+
+        public Room GetNeighbour(Direction direction)
+        {
+            if (_neighbours.TryGetValue(direction, out Room r)) return r;
+            return null;
         }
 
         #region Description
@@ -107,50 +114,19 @@ namespace DungeonExplorer
         }
 
         /// <summary>
-        /// Gets the index of the loot.
-        /// </summary>
-        /// <param name="loot_count">The loot count.</param>
-        /// <param name="current_loot">The current loot.</param>
-        /// <returns></returns>
-        private int GetLootIndex()
-        {
-            int lootCount = _loot.Count();
-            StringBuilder output = new StringBuilder("\nThe room contains:\n");
-
-            // Display the loot as a numbered list
-            for (int i = 0; i < lootCount; i++)
-            {
-                output.Append($"\n{i + 1}. {_loot[i]}");
-            }
-
-            output.Append($"\n{lootCount + 1}. None");
-
-            // Get the users number choice corresponding to the item they want
-            output.Append("\nEnter the item you'd like to loot.");
-
-            // Get the loot input
-            List<string> inputRange = Enumerable.Range(1, lootCount + 1)
-                .Select(x => x.ToString())
-                .ToList();
-            string input = UI.GetInput(inputRange, output.ToString());
-
-            // The index of the loot
-            return int.Parse(input) - 1;
-        }
-
-        /// <summary>
         /// Loots the room.
         /// </summary>
-        /// <param name="current_player">The current player.</param>
-        public void LootRoom(Player current_player)
+        public Item LootRoom()
         {
+            StringBuilder output = new StringBuilder("You search the room and find:\n");
+
             if (!_loot.Any())
             {
-                UI.DisplayMessage("You could not find any useful items.");
-                return;
+                output.AppendLine("Nothing of use.");
+                UI.DisplayMessage(output.ToString(), wait: true);
+                return null;
             }
 
-            StringBuilder output = new StringBuilder("You search the room and find:\n");
             for (int i = 0; i < _loot.Count; i++)
             {
                 Item item = _loot[i];
@@ -159,11 +135,35 @@ namespace DungeonExplorer
             output.AppendLine($"\t{_loot.Count + 1}. Take nothing.");
             output.AppendLine("Choose an item to take: ");
 
-            List<string> inputRange = Enumerable.Range(0, _loot.Count())
+            List<string> inputRange = Enumerable.Range(0, _loot.Count)
                 .Select(x => x.ToString())
                 .ToList();
-            UI.GetInput();
+            string lootIndex = UI.GetInput(inputRange, output.ToString());
+
+
+            if (int.TryParse(lootIndex, out int index)) return _loot[index - 1];
+            else return LootRoom();
+            
         }
+
+        public void GenerateLoot()
+        {
+            Random random = new Random();
+            if (random.Next(0, LootChance) == 0)
+            {
+
+            }
+        }
+
+        #endregion
+        #region Monsters
+
+        public void GenerateMonsters()
+        {
+
+        }
+
+        
 
         #endregion
         #region Overrides 
