@@ -5,28 +5,42 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Runtime.Remoting.Lifetime;
+using System.Security.Policy;
 
 
 namespace DungeonExplorer
 {
+    public enum RoomTypes
+    {
+        Empty,
+        Loot,
+        Easy,
+        Medium,
+        Hard
+    }
+
     public class Room
     {
         /// <summary>
         /// The Room object holds all functionality for each room in this game.
         /// </summary>
-
-        private const int LootChance = 4;
+        public RoomTypes RoomType { get; private set; }
         private List<Item> _loot { get; set; }
+        private List<Monster> _monsters { get; set; }
         private Dictionary<Direction, Room> _neighbours { get; set; }
+
         public string Description { get; private set; }
+
+        private static List<string> _descriptions = LoadDescriptions();
+
+        // Constants
+        private const int LootChance = 4;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Room"/> class.
         /// </summary>
         public Room(List<string> availableDescriptions = null)
         {
-            _descriptions = availableDescriptions ?? LoadDescriptions();
-
             // Generate new description
             if (_descriptions.Count != 0)
             {
@@ -40,6 +54,7 @@ namespace DungeonExplorer
             }
 
             GenerateLoot();
+            GenerateMonsters();
         }
 
         public Room GetNeighbour(Direction direction)
@@ -49,11 +64,9 @@ namespace DungeonExplorer
         }
 
         #region Description
-        private static List<string> _descriptions { get; set; }
-
         private static List<string> LoadDescriptions(string source = "room_descriptions.txt")
         {
-            List<string> defualtDescriptions = new List<string> {
+            List<string> defaultDescriptions = new List<string> {
                 "A dimly lit chamber.",
                 "A cold, stone-walled room.",
                 "A dusty corridor.",
@@ -64,27 +77,27 @@ namespace DungeonExplorer
             {
                 if (!File.Exists(source))
                 {
-                    return defualtDescriptions;
+                    return defaultDescriptions;
                 }
 
                 var descriptions = File.ReadAllLines(source)
                     .Where(line => !string.IsNullOrWhiteSpace(line))
                     .ToList();
-                return descriptions.Any() ? descriptions : defualtDescriptions;
+                return descriptions.Any() ? descriptions : defaultDescriptions;
             }
             catch (Exception e)
             {
                 string errorMessage = $"Error loading room: {e.Message}";
                 UI.DisplayMessage(errorMessage, wait: true);
-                return defualtDescriptions;
+                return defaultDescriptions;
             }
         }
 
-        private string GenerateDescription()
+        public static string GenerateDescription()
         {
             Random random = new Random();
 
-            if (Description == null || Description.Count() == 0)
+            if (_descriptions == null || _descriptions.Count == 0)
             {
                 return "An eerily empty room.";
             }
@@ -151,7 +164,18 @@ namespace DungeonExplorer
             Random random = new Random();
             if (random.Next(0, LootChance) == 0)
             {
-
+                // Generate loot
+                int lootCount = random.Next(1, 4);
+                _loot = new List<Item>();
+                for (int i = 0; i < lootCount; i++)
+                {
+                    //Item item = Item.GenerateItem();
+                    //_loot.Add(item);
+                }
+            }
+            else
+            {
+                _loot = new List<Item>();
             }
         }
 

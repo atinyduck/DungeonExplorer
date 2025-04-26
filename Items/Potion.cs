@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace DungeonExplorer
 {
+    public enum PotionEffect
+    {
+        Heal,
+        Poison,
+        StrengthBuff,
+        DefenceBuff,
+        Invisibility
+    }
     public class Potion : Item
     {
         public PotionEffect EffectType { get; private set; }

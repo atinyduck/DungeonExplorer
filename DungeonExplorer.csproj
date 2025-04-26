@@ -43,36 +43,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Armour.cs" />
-    <Compile Include="Direction.cs" />
-    <Compile Include="GameMap.cs" />
-    <Compile Include="Item.cs" />
-    <Compile Include="Monster.cs" />
-    <Compile Include="MonsterTypes.cs" />
-    <Compile Include="Potion.cs" />
-    <Compile Include="PotionEffect.cs" />
-    <Compile Include="BaseStatistic.cs" />
-    <Compile Include="Creature.cs" />
+    <Compile Include="Items\Armour.cs" />
+    <Compile Include="Map\GameMap.cs" />
+    <Compile Include="Items\Item.cs" />
+    <Compile Include="Creatures\Monster.cs" />
+    <Compile Include="Creatures\MonsterTypes.cs" />
+    <Compile Include="Items\Potion.cs" />
+    <Compile Include="Creatures\Creature.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="UI.cs" />
-    <Compile Include="ICollectable.cs" />
-    <Compile Include="IDamageable.cs" />
-    <Compile Include="Inventory.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Interfaces\ICollectable.cs" />
+    <Compile Include="Interfaces\IDamageable.cs" />
+    <Compile Include="Items\Inventory.cs" />
+    <Compile Include="Creatures\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Room.cs" />
+    <Compile Include="Map\Room.cs" />
     <Compile Include="Testing.cs" />
-    <Compile Include="Weapon.cs" />
+    <Compile Include="Items\Weapon.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="items.txt" />
-    <Content Include="room_descriptions.txt">
+    <Content Include="Map\room_descriptions.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

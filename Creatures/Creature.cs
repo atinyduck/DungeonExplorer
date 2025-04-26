@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace DungeonExplorer
 {
+    public enum BaseStatistic
+    {
+        Defence,
+        AttackPower,
+        MaxHealth
+    }
     public abstract class Creature : IDamageable
     {
         public string Name { get; private set; }
