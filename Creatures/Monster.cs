@@ -1,45 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DungeonExplorer
+﻿namespace DungeonExplorer;
+public class Monster : Creature, ISaveable
 {
-    public class Monster : Creature
+    public int RewardXP { get; private set; }
+
+    protected Monster(string name, int maxHealth, int defence, int attackPower, int rewardXP)
+        : base(name, maxHealth, defence, attackPower)
     {
-        public int RewardXP { get; private set; }
+        RewardXP = rewardXP;
+    }
 
-        protected Monster(string name, int maxHealth, int defence, int attackPower, int rewardXP)
-            : base(name, maxHealth, defence, attackPower)
-        {
-            RewardXP = rewardXP;
-        }
+    #region Save Implementation
+    public string GetSaveIdentifier() => $"monster_{GetType().Name}_{Health}";
 
-        public virtual List<Item> GenerateDrops()
-        {
-            var drops = new List<Item>();
-            Random random= new Random();
-            if (random.Next(0, 2) == 0)
-            {
-                // Add item here (Health potion)
-            }
-            return drops;
-        }
+    #endregion
 
-        public override void Attack(IDamageable target)
+    public virtual List<Item> GenerateDrops()
+    {
+        var drops = new List<Item>();
+        var random = new Random();
+        if (random.Next(0, 2) == 0)
         {
-            int damage = AttackPower;
-            if (EquippedWeapon != null)
-            {
-                damage += EquippedWeapon.DamageModifier;
-            }
-            target.TakeDamage(damage);
+            drops.Add(new Potion("Health Potion", "A potion that restores health.", PotionEffect.Heal, -1, 20));
         }
+        return drops;
+    }
 
-        public override string ToString()
+    public override void Attack(IDamageable target)
+    {
+        int damage = AttackPower;
+        if (EquippedWeapon != null)
         {
-            return base.ToString();
+            damage += EquippedWeapon.DamageModifier;
         }
+        target.TakeDamage(damage);
+    }
+
+    public override string ToString()
+    {
+        StringBuilder builder = new StringBuilder();
+
+        builder.AppendLine($"A {Name} stands before you!");
+        builder.AppendLine($"Health: {Health}/{MaxHealth}");
+
+        return builder.ToString();
     }
 }

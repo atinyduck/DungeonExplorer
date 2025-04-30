@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DungeonExplorer
+﻿namespace DungeonExplorer;
+public interface IDamageable
 {
-    public interface IDamageable
-    {
-        int Health { get; }
-        int MaxHealth { get; }
-        void TakeDamage(int damage);
-        void Heal(int amount);
-    }
+    string Name { get; }
+    int Health { get; }
+    int MaxHealth { get; }
+    int AttackPower { get; }
+    int Defence { get; }
+    void TakeDamage(int damage);
+    void Heal(int amount);
 }

@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DungeonExplorer
+﻿namespace DungeonExplorer;
+public interface ICollectable
 {
-    public interface ICollectable
-    {
-        string Name { get; }
-        string Description { get; }
-        void Use(Creature target);
-    }
+    string Name { get; }
+    string Description { get; }
+    void Use(Creature target);
 }

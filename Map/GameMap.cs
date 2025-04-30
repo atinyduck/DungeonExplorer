@@ -1,62 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DungeonExplorer
+﻿namespace DungeonExplorer;
+public enum Direction
 {
-    public enum Direction
+    North,
+    East,
+    South,
+    West
+}
+
+public class GameMap
+{
+    private List<Room> _map { get; set; }
+    public IReadOnlyList<Room> Map => _map.AsReadOnly();
+    public Room CurrentRoom { get; private set; }
+    public List<Room> VisitedRooms { get; private set; } = new List<Room>();
+
+    public GameMap(Room startingRoom, int maxDepth = 5, int maxBranching = 3)
     {
-        North,
-        East,
-        South,
-        West
+        _map = new List<Room>();
+        CurrentRoom = startingRoom ?? throw new ArgumentNullException(nameof(startingRoom));
+        _map.Add(startingRoom);
     }
 
-    public class GameMap
+    public void AddRoom(Room room)
     {
-        private List<Room> _map { get; set; }
-        public IReadOnlyList<Room> Map => _map.AsReadOnly();
-        public Room CurrentRoom { get; private set; }
+        if (room == null) throw new ArgumentNullException(nameof(room));
+        if (_map.Contains(room)) throw new InvalidOperationException("Room already exists in the map.");
+        _map.Add(room);
+    }
 
-        public GameMap(Room startingRoom)
+    public bool Move(Direction direction)
+    {
+        var neighbour = CurrentRoom.GetNeighbour(direction);
+        if (neighbour != null)
         {
-            _map = new List<Room>();
-            CurrentRoom = startingRoom;
-            AddRoom(startingRoom);
-        }
-
-        public void AddRoom(Room room)
-        {
-            if (room == null) throw new ArgumentNullException(nameof(room));
-            _map.Add(room);
-        }
-
-        private void GenerateRoom()
-        {
-            var room = new Room();
-            AddRoom(room);
-        }
-
-        public void GenerateMap(int maxDepth = 0, int depth = 0)
-        {
+            CurrentRoom = neighbour;
+            if (!VisitedRooms.Contains(CurrentRoom)) VisitedRooms.Add(CurrentRoom);
+            if (!_map.Contains(CurrentRoom)) _map.Add(CurrentRoom);
             
+            return true;
         }
-
-        public bool MovePlayer(Direction direction)
-        {
-            var neighbour = CurrentRoom.GetNeighbour(direction);
-            if (neighbour != null)
-            {
-                CurrentRoom = neighbour;
-                if (!_rooms.Contains(CurrentRoom))
-                {
-                    _rooms.Add(CurrentRoom);
-                }
-                return true;
-            }
-            return false;
-        }
+        return false;
     }
 }

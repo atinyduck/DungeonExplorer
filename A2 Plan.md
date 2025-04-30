@@ -711,7 +711,7 @@ public class GameMap
 - **AddRoom**(Room room): Adds a room to the private _rooms;
 - **MovePlayer**(Direction direction): Moves the player a specified direction through the map.
 
-```
+```csharp
     public void AddRoom(Room room)
     {
         if (room == null) throw new ArgumentNullException(nameof(room));
