@@ -70,7 +70,7 @@ public class Game
                     break;
 
                 case "D": // Debug
-                    //Testing.TestMenu();
+                    Testing.RunAllTests();
                     break;
             }
         }

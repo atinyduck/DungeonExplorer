@@ -21,7 +21,7 @@ public class ClockworkMage : Monster
     public override void Attack(IDamageable target)
     {
         // Basic Multi-Attack
-        for (int i = AttackNum; i < 2; i++)
+        for (int i = 1; i <= AttackNum; i++)
         {
             int damage = Convert.ToInt16(AttackPower);
             target.TakeDamage(damage);
