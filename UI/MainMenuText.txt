@@ -1,0 +1,13 @@
+In a forgotten realm consumed by corrosion and decay, each 
+door leads deeper into the ruins of a kingdom lost to time. 
+Monsters lurk in shadowed corridors, and only those brave 
+enough can uncover the secrets hidden within.
+
+Will you press on through the rust and ruin, or will you 
+succumb to the darkness?
+
+1. Enter the Ruins
+2. How to Play
+3. Abandon Quest
+Q. Quit
+Choose your fate [1 - 4]
