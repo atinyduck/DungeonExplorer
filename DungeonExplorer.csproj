@@ -28,7 +28,7 @@
     <AnalysisLevel>latest-recommended</AnalysisLevel>
 
     <!-- Icons -->
-    <ApplicationIcon>bin\Debug\Icons-Land-Medical-Documents-BiologicalHazard-Symbol-Triangle.ico</ApplicationIcon>
+    <ApplicationIcon>biological-hazard_icon-icons.com_63481.ico</ApplicationIcon>
     <PackageIcon>Icons-Land-Medical-Documents-BiologicalHazard-Symbol-Triangle.ico</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -51,8 +51,15 @@
     <Content Include="Map\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Remove="IntroText.txt" />
+    <None Remove="MainMenuText.txt" />
+    <None Remove="room_descriptions.txt" />
+    <None Remove="TitleText.txt" />
     <None Remove="UI\MainMenuText.txt" />
-    <Content Include="bin\Debug\Icons-Land-Medical-Documents-BiologicalHazard-Symbol-Triangle.ico" />
+    <None Remove="WelcomeText.txt" />
+    <Content Include="biological-hazard_icon-icons.com_63481.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="UI\MainMenuText.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -83,6 +90,28 @@
     <None Update="UI\WelcomeText.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="bin\Debug\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="IntroText.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="MainMenuText.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="room_descriptions.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="TitleText.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WelcomeText.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

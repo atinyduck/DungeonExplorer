@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DungeonExplorer;
+﻿namespace DungeonExplorer;
+/// <summary>
+/// Class reposnsible for file management.
+/// </summary>
 public static class FileManager
 {
+    /// <summary>
+    /// Reads from the file asynchronous.
+    /// </summary>
+    /// <param name="filePath">The file path.</param>
+    /// <returns></returns>
     public static async Task<string> ReadFileAsync(string filePath)
     {
         try
@@ -23,6 +25,11 @@ public static class FileManager
         }
     }
 
+    /// <summary>
+    /// Writes to the file asynchronous.
+    /// </summary>
+    /// <param name="filePath">The file path.</param>
+    /// <param name="content">The content.</param>
     public static async Task WriteFileAsync(string filePath, string content)
     {
         try

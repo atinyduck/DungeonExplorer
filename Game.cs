@@ -1,11 +1,22 @@
-﻿using System.Threading;
-
+﻿
 namespace DungeonExplorer;
 /// <summary>
-/// Main game class that manages the game state and flow
+/// Gmae class that handles the main game loop and player interactions.
 /// </summary>
 public class Game
 {
+    /// <summary>
+    /// Private enum for player actions
+    /// </summary>
+    private enum PlayerAction
+    {
+        Move,
+        Loot,
+        Inventory,
+        UseItem,
+        Quit
+    }
+
     private Player player;
     private GameMap gameMap;
     private bool isRunning;
@@ -97,7 +108,8 @@ public class Game
     private void InitialiseNewGame()
     {
         player = new Player(GetPlayerName());
-        gameMap = new GameMap(Room.GenerateStartingRoom());
+        var startRoom = new Room();
+        gameMap = new GameMap(startRoom);
 
         DisplayIntro();
     }
@@ -114,16 +126,20 @@ public class Game
         isRunning = true;
         DateTime lastSaveTime = DateTime.Now;
 
+        // Main game loop
         while (isRunning)
         {
-            // Auto-save every 5 minutes
-            if ((DateTime.Now - lastSaveTime).TotalMinutes >= 5)
+            int autSaveInterval = 3; // Auto-save interval in minutes
+
+            // Auto-save every x minutes
+            if ((DateTime.Now - lastSaveTime).TotalMinutes >= autSaveInterval)
             {
                 SaveManager.SaveGame(currentSaveSlot, player, gameMap);
                 lastSaveTime = DateTime.Now;
                 UI.Message("Game progress saved", wait: false);
             }
 
+            // Handle user interactions
             DisplayCurrentRoom();
             HandlePlayerAction();
             CheckGameState();
@@ -145,8 +161,9 @@ public class Game
         {
             var monsters = gameMap.CurrentRoom.GetMonsters();
 
+            // Display monster names
             string monsterNames = string.Join("\n\t", monsters.Select(m => m.Name));
-            UI.Message($"You encounter\n\t{monsterNames}!", wait: true);
+            UI.Message($"You encounter\n\t{monsterNames}", wait: true);
 
             while (monsters.Any(m => m.Health > 0))
             {
@@ -170,7 +187,7 @@ public class Game
     {
         var action = GetPlayerAction();
 
-        switch (action)
+        switch (action) // Handle player action
         {
             case PlayerAction.Move:
                 HandleMovement();
@@ -208,6 +225,7 @@ public class Game
     /// </summary>
     private void HandleMovement()
     {
+        // Get available directions from the current room
         var directions = Enum.GetValues(typeof(Direction)).Cast<Direction>();
         var directionOptions = directions.ToDictionary(
             d => d.ToString().Substring(0, 1),
@@ -221,12 +239,15 @@ public class Game
             player.Statistics.UpdateRoomsVisited();
             DiscoverRoom();
         }
-        else
+        else // Invalid move
         {
             UI.Message("You can't go that way!", wait: true);
         }
     }
 
+    /// <summary>
+    /// Handles looting the room.
+    /// </summary>
     private void HandleLootRoom()
     {
         if (gameMap.CurrentRoom.HasLoot())
@@ -280,12 +301,13 @@ public class Game
     {
         var usableItems = player.Inventory.Items.Where(i => i is ICollectable).ToList();
 
-        if (usableItems.Count == 0)
+        if (usableItems.Count == 0) // No usable items
         {
             UI.Message("No usable items in inventory.", wait: true);
             return;
         }
 
+        // Display usable items
         var itemList = usableItems.Select((item, i) => $"{i + 1}. {item.Name}").ToList();
         itemList.Add($"{itemList.Count + 1}. Cancel");
 
@@ -295,6 +317,11 @@ public class Game
 
         if (int.TryParse(input, out int index) && index <= usableItems.Count)
         {
+            if (index == itemList.Count) // Cancel
+            {
+                UI.Message("Cancelled item usage.", wait: true);
+                return;
+            }
             var item = usableItems[index - 1];
             item.Use(player);
             player.Inventory.RemoveItem(item);
@@ -320,7 +347,7 @@ public class Game
         {
             var action = GetCombatAction();
 
-            switch (action)
+            switch (action) // Handle combat action
             {
                 case CombatAction.Attack:
                     player.Attack(currentMonster);
@@ -364,7 +391,7 @@ public class Game
         sb.AppendLine($"You: {player.Health}/{player.MaxHealth} HP | ATK: {player.AttackPower} | DEF: {player.Defence}");
         sb.AppendLine($"{monster.Name}: {monster.Health}/{monster.MaxHealth} HP | ATK: {monster.AttackPower} | DEF: {monster.Defence}");
 
-        if (player.ActiveEffects.Count != 0)
+        if (player.ActiveEffects.Count != 0) // Display active effects
         {
             sb.AppendLine("\nActive Effects:");
             foreach (var effect in player.ActiveEffects)
@@ -375,28 +402,6 @@ public class Game
 
         UI.Message(sb.ToString(), ConsoleColor.Yellow, false);
     }
-
-    /// <summary>
-    /// Gets the player's combat action choice
-    /// </summary>
-    private CombatAction GetCombatAction()
-    {
-        var options = new Dictionary<string, CombatAction>
-        {
-            ["A"] = CombatAction.Attack,
-            ["U"] = CombatAction.UseItem,
-            ["F"] = CombatAction.Flee
-        };
-
-        string input = UI.GetInput(options.Keys.ToList(),
-            "Choose action:\n" +
-            "A - Attack\n" +
-            "U - Use Item\n" +
-            "F - Attempt to Flee");
-
-        return options[input.ToUpper()];
-    }
-
 
     /// <summary>
     /// Attempts to flee from combat with a chance of failure
@@ -424,6 +429,7 @@ public class Game
     /// </summary>
     private void ConcludeCombat(Monster monster)
     {
+        // Update player stats
         gameMap.CurrentRoom.RemoveMonsters();
         player.Statistics.UpdateMonstersKilled();
         player.GainExperience(monster.RewardXP);
@@ -449,7 +455,7 @@ public class Game
     #region Helper Classes
 
     /// <summary>
-    /// Possible combat actions
+    /// Enum for possible combat actions
     /// </summary>
     private enum CombatAction
     {
@@ -534,6 +540,27 @@ public class Game
     }
 
     /// <summary>
+    /// Gets the player's combat action choice
+    /// </summary>
+    private CombatAction GetCombatAction()
+    {
+        var options = new Dictionary<string, CombatAction>
+        {
+            ["A"] = CombatAction.Attack,
+            ["U"] = CombatAction.UseItem,
+            ["F"] = CombatAction.Flee
+        };
+
+        string input = UI.GetInput(options.Keys.ToList(),
+            "Choose action:\n" +
+            "A - Attack\n" +
+            "U - Use Item\n" +
+            "F - Attempt to Flee");
+
+        return options[input.ToUpper()];
+    }
+
+    /// <summary>
     /// Gets the player's name via input
     /// </summary>
     private string GetPlayerName()
@@ -575,6 +602,7 @@ public class Game
     /// </summary>
     private void DeleteSaveGame()
     {
+        // Prompt for save slot
         int slotNumber = SaveManager.GetSaveSlot();
         if (slotNumber != null && SaveManager.SaveExists(slotNumber))
         {
@@ -587,16 +615,4 @@ public class Game
     }
 
     #endregion
-
-    /// <summary>
-    /// Possible player actions
-    /// </summary>
-    private enum PlayerAction
-    {
-        Move,
-        Loot,
-        Inventory,
-        UseItem,
-        Quit
-    }
 }

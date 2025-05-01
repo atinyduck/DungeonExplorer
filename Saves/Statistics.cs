@@ -1,5 +1,8 @@
 ﻿namespace DungeonExplorer;
-public class Statistics
+/// <summary>
+/// Class to hold player statistics.
+/// </summary>
+public class Statistics : ISaveable
 {
     public int RoomsVisited { get; private set; }
     public int MonstersKilled { get; private set; }
@@ -11,64 +14,76 @@ public class Statistics
 
     public TimeSpan Duration => DateTime.Now - StartTime;
 
-    #region Save Implementation
+    /// <summary>
+    /// Gets the save identifier.
+    /// </summary>
+    /// <returns>The identifier</returns>
+    public string GetSaveIdentifier() => "player_stats";
 
-    public string GetSaveIdentifier = "player_stats";
-
-    public static string GetSavePath(string saveFolder) =>
-        Path.Combine(saveFolder, "statistics.json");
-
-    public object ToSaveData() => new
-    {
-        RoomsVisited,
-        MonstersKilled,
-        ItemsCollected,
-        TotalDamageDealt,
-        TotalDamageTaken,
-        StartTime = StartTime.ToString("o") // ISO 8601 format
-    };
-
-    public void FromSaveData(object data)
-    {
-        dynamic json = data;
-        RoomsVisited = json.RoomsVisited;
-        MonstersKilled = json.MonstersKilled;
-        ItemsCollected = json.ItemsCollected;
-        TotalDamageDealt = json.TotalDamageDealt;
-        TotalDamageTaken = json.TotalDamageTaken;
-        StartTime = DateTime.Parse(json.StartTime);
-    }
-
-    #endregion
-
+    /// <summary>
+    /// Updates the rooms visited.
+    /// </summary>
+    /// <param name="amount">The amount.</param>
+    /// <param name="set">if set to <c>true</c> [set].</param>
     public void UpdateRoomsVisited(int amount = 1, bool set = false)
     {
         if (set) RoomsVisited = amount;
         else RoomsVisited += amount;
     }
+
+    /// <summary>
+    /// Updates the monsters killed.
+    /// </summary>
+    /// <param name="amount">The amount.</param>
+    /// <param name="set">if set to <c>true</c> [set].</param>
     public void UpdateMonstersKilled(int amount = 1, bool set = false)
     {
         if (set) MonstersKilled = amount;
         else MonstersKilled += amount;
     }
+
+    /// <summary>
+    /// Updates the items collected.
+    /// </summary>
+    /// <param name="amount">The amount.</param>
+    /// <param name="set">if set to <c>true</c> [set].</param>
     public void UpdateItemsCollected(int amount = 1, bool set = false)
     {
         if (set) ItemsCollected = amount;
         else ItemsCollected += amount;
     }
+
+    /// <summary>
+    /// Updates the total damage dealt.
+    /// </summary>
+    /// <param name="amount">The amount.</param>
+    /// <param name="set">if set to <c>true</c> [set].</param>
     public void UpdateTotalDamageDealt(int amount, bool set = false)
     {
         if (set) TotalDamageDealt = amount;
         else TotalDamageDealt += amount;
     }
+
+    /// <summary>
+    /// Updates the total damage taken.
+    /// </summary>
+    /// <param name="amount">The amount.</param>
+    /// <param name="set">if set to <c>true</c> [set].</param>
     public void UpdateTotalDamageTaken(int amount, bool set = false)
     {
         if (set) TotalDamageTaken = amount;
         else TotalDamageTaken += amount;
     }
 
+    /// <summary>
+    /// Updates the start time.
+    /// </summary>
+    /// <param name="time">The time.</param>
     public void UpdateStartTime(DateTime time) => StartTime = time;
-    
+
+    /// <summary>
+    /// Resets this instance.
+    /// </summary>
     public void Reset()
     {
         StartTime = DateTime.Now;
@@ -79,6 +94,10 @@ public class Statistics
         TotalDamageDealt = 0;
     }
 
+    /// <summary>
+    /// Converts to string.
+    /// </summary>
+    /// <returns></returns>
     public override string ToString() => $"""
         === Statistics ===
 

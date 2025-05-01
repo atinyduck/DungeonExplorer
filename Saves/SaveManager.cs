@@ -93,49 +93,18 @@
         /// </summary>
         private class RoomData
         {
-            /// <summary>
-            /// Unique identifier for the room
-            /// </summary>
             public string Id { get; set; }
 
-            /// <summary>
-            /// Type of room (enum converted to string)
-            /// </summary>
             public string Type { get; set; }
 
-            /// <summary>
-            /// Description text displayed to player
-            /// </summary>
             public string Description { get; set; }
 
-            /// <summary>
-            /// Dictionary of connected rooms by direction
-            /// </summary>
             public Dictionary<string, NeighbourData> Neighbours { get; set; } = new();
 
-            /// <summary>
-            /// List of item IDs contained in this room
-            /// </summary>
-            public List<string> ItemIds { get; set; } = new();
-
-            /// <summary>
-            /// List of monster IDs contained in this room
-            /// </summary>
-            public List<string> MonsterIds { get; set; } = new();
-
-            /// <summary>
-            /// Data structure for serialising room connections
-            /// </summary>
             public class NeighbourData
             {
-                /// <summary>
-                /// Connected room's unique identifier
-                /// </summary>
                 public string RoomId { get; set; }
 
-                /// <summary>
-                /// Type of the connected room
-                /// </summary>
                 public string Type { get; set; }
             }
 
@@ -266,7 +235,7 @@
                     Type = item.GetType().Name
                 };
 
-                switch (item)
+                switch (item) // Build item data based on type
                 {
                     case Weapon weapon:
                         itemData.DamageModifier = weapon.DamageModifier;

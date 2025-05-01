@@ -1,4 +1,10 @@
 ﻿namespace DungeonExplorer;
+
+/// <summary>
+/// Represents an item of type <see cref="Weapon"/>.
+/// </summary>
+/// <seealso cref="DungeonExplorer.Item" />
+/// <seealso cref="DungeonExplorer.ISaveable" />
 public class Weapon : Item, ISaveable
 {
     public int DamageModifier { get; private set; }
@@ -12,17 +18,26 @@ public class Weapon : Item, ISaveable
 
     public static IReadOnlyList<Weapon> Weapons => _weapons.AsReadOnly();
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Weapon"/> class.
+    /// </summary>
+    /// <param name="name">The name.</param>
+    /// <param name="description">The description.</param>
+    /// <param name="damageModifier">The damage modifier.</param>
     public Weapon(string name, string description, int damageModifier)
             : base(name, description)
     {
         DamageModifier = damageModifier;
     }
 
-    #region Save Implementation
     public override string GetSaveIdentifier() => $"weapon_{Name}_{DamageModifier}";
 
-    #endregion
-
+    /// <summary>
+    /// Converts to string.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="System.String" /> that represents this instance.
+    /// </returns>
     public override string ToString()
     {
         // Display the weapon name, description and stats.
@@ -32,31 +47,31 @@ public class Weapon : Item, ISaveable
 
         return builder.ToString();
     }
-    
+
+    /// <summary>
+    /// Generates the item.
+    /// </summary>
+    /// <param name="seed">The seed.</param>
+    /// <returns></returns>
     public static ICollectable GenerateItem(int seed = 0)
     {
-        if (seed != 0)
+        if (seed != 0) // If seed is provided, use it to select the item.
         {
             return _weapons[seed];
         }
-        else
+        else // Otherwise, select a random item.
         {
             var random = new Random();
-            List<Weapon> armours = new(_weapons);
-            for (int i = 0; i < armours.Count; i++)
-            {
-                int j = random.Next(armours.Count);
-                while (j == i) { random.Next(armours.Count); }
-                (armours[i], armours[j]) = (armours[j], armours[i]);
-            }
-
-            return armours[0];
+            return _weapons[random.Next(0, _weapons.Count)];
         }
     }
 
+    /// <summary>
+    /// Uses the specified target.
+    /// </summary>
+    /// <param name="target">The target.</param>
     public override void Use(Creature target)
     {
         target.EquipWeapon(this);
-        //Display equipped weapon
     }
 }

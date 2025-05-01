@@ -1,4 +1,7 @@
 ﻿namespace DungeonExplorer;
+/// <summary>
+/// Interface for damageable entities.
+/// </summary>
 public interface IDamageable
 {
     string Name { get; }
