@@ -51,11 +51,18 @@ Do you have what it takes to navigate the dangers, claim the treasure, and uncov
 
 Repository designed for CMP1903M_2425 at the University of Lincoln
 
-### Assessmemt 1
+### Assessment 1
 
-Video outlining OOP methods and how I implemented them: [Video Link](https://youtu.be/AuABmz9-sNg)
+Video outlining OOP use: [Video Link](https://youtu.be/AuABmz9-sNg)
 
 Supporting report: [Report Link](https://universityoflincoln-my.sharepoint.com/:w:/g/personal/29160569_students_lincoln_ac_uk/EcVzjrfMk1RCpbyEQwV1wQYBXc8HR5Rx0KBb7aMc2RkBug?e=S2YNcX)
+
+### Assessment 2
+
+Video outlining OOP use: [Video Link](https://youtu.be/AuABmz9-sNg)
+
+Supporting report: [Report Link](https://universityoflincoln-my.sharepoint.com/:w:/g/personal/29160569_students_lincoln_ac_uk/EcVzjrfMk1RCpbyEQwV1wQYBXc8HR5Rx0KBb7aMc2RkBug?e=S2YNcX)
+
 
 ---
 
