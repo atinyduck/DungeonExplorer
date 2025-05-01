@@ -59,9 +59,9 @@ Supporting report: [Report Link](https://universityoflincoln-my.sharepoint.com/:
 
 ### Assessment 2
 
-Video outlining OOP use: [Video Link](https://youtu.be/AuABmz9-sNg)
+Video outlining OOP use: [Video Link](https://youtu.be/1s3wNdmgeH8)
 
-Supporting report: [Report Link](https://universityoflincoln-my.sharepoint.com/:w:/g/personal/29160569_students_lincoln_ac_uk/EcVzjrfMk1RCpbyEQwV1wQYBXc8HR5Rx0KBb7aMc2RkBug?e=S2YNcX)
+Supporting report: [Report Link](https://docs.google.com/document/d/1ipEnnre-4A4CFLR8uA9Eskzc1ejhSm-SC2AbFI4OnL4/edit?usp=sharing)
 
 
 ---
